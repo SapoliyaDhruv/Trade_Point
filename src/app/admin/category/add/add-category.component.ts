@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminCategoryService } from '../../services/admin-category.service';
 
 @Component({
   selector: 'app-add-category',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './add-category.component.html',
   styleUrls: ['./add-category.component.css']
 })
