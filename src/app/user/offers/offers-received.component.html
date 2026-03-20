@@ -1,0 +1,65 @@
+<section class="page">
+  <header class="header">
+    <h2>Offers Received</h2>
+    <button class="refresh" (click)="loadOffers()">Refresh</button>
+  </header>
+
+  <div *ngIf="isLoading" class="state">Loading offers...</div>
+  <div *ngIf="errorMsg && !isLoading" class="state error">{{ errorMsg }}</div>
+
+  <div *ngIf="!isLoading && offers.length === 0" class="state">
+    No offers received yet for your products.
+  </div>
+
+  <div class="grid" *ngIf="!isLoading && offers.length > 0">
+    <article class="offer-card" *ngFor="let offer of offers">
+      <div class="row">
+        <div>
+          <p class="label">Product</p>
+          <h3>{{ offer.productId.name }}</h3>
+        </div>
+        <span class="badge" [class.sell]="offer.offerType === 'SELL'" [class.rent]="offer.offerType === 'RENT'">
+          {{ offer.offerType }}
+        </span>
+      </div>
+
+      <p class="meta">Buyer: {{ offer.buyerId.firstName }} {{ offer.buyerId.lastName }}</p>
+      <p class="meta">Email: {{ offer.buyerId.email }}</p>
+      <p class="price">Rs. {{ offer.offerAmount }} {{ offer.offerType === 'RENT' ? '/ day' : '' }}</p>
+
+      <p class="meta" *ngIf="offer.offerType === 'RENT'">
+        {{ offer.rentStartDate | date:'mediumDate' }} - {{ offer.rentEndDate | date:'mediumDate' }}
+      </p>
+
+      <div class="actions">
+        <button class="btn secondary" (click)="openChat(offer._id)">Chat</button>
+        <button class="btn success" (click)="approve(offer._id)">Approve</button>
+        <button class="btn danger" (click)="reject(offer._id)">Reject</button>
+        <button class="btn warn" *ngIf="offer.offerType === 'SELL'" (click)="openCounterModal(offer._id)">Counter</button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="counter-backdrop" *ngIf="showCounterModal" (click)="closeCounterModal()"></div>
+<section class="counter-modal" *ngIf="showCounterModal">
+  <header>
+    <h3>Send Counter Offer</h3>
+    <button class="close-btn" (click)="closeCounterModal()">Close</button>
+  </header>
+
+  <label>Counter Amount (Rs.)</label>
+  <input type="number" [(ngModel)]="counterAmountInput" min="1" placeholder="Enter amount" />
+
+  <label>Message (Optional)</label>
+  <textarea rows="4" [(ngModel)]="counterMessageInput" placeholder="Explain your counter offer..."></textarea>
+
+  <p class="counter-error" *ngIf="counterError">{{ counterError }}</p>
+
+  <div class="counter-actions">
+    <button class="btn secondary" (click)="closeCounterModal()" [disabled]="counterSubmitting">Cancel</button>
+    <button class="btn warn" (click)="submitCounterModal()" [disabled]="counterSubmitting">
+      {{ counterSubmitting ? 'Sending...' : 'Send Counter' }}
+    </button>
+  </div>
+</section>

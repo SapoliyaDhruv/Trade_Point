@@ -1,0 +1,24 @@
+<section class="page">
+  <header class="header">
+    <h2>Notifications</h2>
+    <div class="actions">
+      <button class="btn secondary" (click)="loadNotifications()">Refresh</button>
+      <button class="btn primary" (click)="markAllRead()">Mark All Read</button>
+    </div>
+  </header>
+
+  <div *ngIf="loading" class="state">Loading notifications...</div>
+  <div *ngIf="error && !loading" class="state error">{{ error }}</div>
+  <div *ngIf="!loading && !error && items.length === 0" class="state">No notifications yet.</div>
+
+  <div class="list" *ngIf="!loading && items.length > 0">
+    <article class="item" *ngFor="let item of items" [class.unread]="!item.isRead" (click)="open(item)">
+      <div>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.message }}</p>
+        <small>{{ item.createdAt | date:'medium' }}</small>
+      </div>
+      <button class="chip" *ngIf="!item.isRead" (click)="$event.stopPropagation(); markRead(item)">Unread</button>
+    </article>
+  </div>
+</section>

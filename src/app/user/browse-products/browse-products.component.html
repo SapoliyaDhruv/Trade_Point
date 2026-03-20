@@ -1,0 +1,94 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Marketplace</p>
+      <h2>Browse Products</h2>
+      <p class="result-count" *ngIf="!isLoading">{{ total }} result{{ total === 1 ? '' : 's' }}</p>
+    </div>
+  </header>
+
+  <section class="filters">
+    <input
+      type="text"
+      [(ngModel)]="q"
+      placeholder="Search name, description, location..."
+      (keyup.enter)="loadProducts(true)"
+    />
+
+    <input
+      type="text"
+      [(ngModel)]="location"
+      placeholder="City / Area"
+      (keyup.enter)="loadProducts(true)"
+    />
+
+    <select [(ngModel)]="selectedCategory" (change)="loadProducts(true)">
+      <option value="">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
+    </select>
+
+    <select [(ngModel)]="selectedType" (change)="loadProducts(true)">
+      <option value="">Sale + Rent</option>
+      <option value="sale">Only Sale</option>
+      <option value="rent">Only Rent</option>
+    </select>
+
+    <select [(ngModel)]="sort" (change)="loadProducts(true)">
+      <option value="newest">Newest</option>
+      <option value="oldest">Oldest</option>
+      <option value="price_asc">Price Low to High</option>
+      <option value="price_desc">Price High to Low</option>
+    </select>
+
+    <input type="number" min="0" [(ngModel)]="minPrice" placeholder="Min Price" (keyup.enter)="loadProducts(true)" />
+    <input type="number" min="0" [(ngModel)]="maxPrice" placeholder="Max Price" (keyup.enter)="loadProducts(true)" />
+    <input type="number" min="0" [(ngModel)]="minAge" placeholder="Min Age (Years)" (keyup.enter)="loadProducts(true)" />
+    <input type="number" min="0" [(ngModel)]="maxAge" placeholder="Max Age (Years)" (keyup.enter)="loadProducts(true)" />
+
+    <button class="btn primary" (click)="loadProducts(true)">Apply</button>
+    <button class="btn secondary" (click)="clearFilters()">Clear</button>
+  </section>
+
+  <div *ngIf="isLoading" class="state-card">Loading products...</div>
+  <div *ngIf="!isLoading && products.length === 0" class="state-card">No products found for current filters.</div>
+
+  <div class="grid" *ngIf="!isLoading && products.length > 0">
+    <article class="product-card" *ngFor="let product of products" (click)="openProduct(product._id)">
+      <div class="image-wrap">
+        <img [src]="getCleanImageUrl(product.photos?.[0])" alt="{{ product.name }}" (error)="handleImageError($event)" />
+        <span class="type-badge" [class.sale]="product.type === 'sale'" [class.rent]="product.type === 'rent'">
+          {{ product.type | titlecase }}
+        </span>
+        <button
+          class="wishlist-btn"
+          (click)="toggleWishlist($event, product._id)"
+          [class.active]="isWishlisted(product._id)"
+          [attr.aria-label]="isWishlisted(product._id) ? 'Remove from wishlist' : 'Add to wishlist'"
+        >
+          {{ isWishlisted(product._id) ? 'Saved' : 'Save' }}
+        </button>
+      </div>
+
+      <div class="content">
+        <h3>{{ product.name }}</h3>
+
+        <p class="price" *ngIf="product.type === 'sale'">
+          Rs. {{ product.salePriceMin }} - Rs. {{ product.salePriceMax }}
+        </p>
+        <p class="price" *ngIf="product.type === 'rent'">
+          Rs. {{ product.rentPricePerDay }} / day
+          <span *ngIf="product.rentPricePerHour"> | Rs. {{ product.rentPricePerHour }} / hour</span>
+        </p>
+
+        <p class="meta">{{ product.category?.name }} | {{ product.location }}</p>
+        <p class="meta">Seller: {{ product.seller?.firstName }} {{ product.seller?.lastName }}</p>
+      </div>
+    </article>
+  </div>
+
+  <footer class="pagination" *ngIf="!isLoading && totalPages > 1">
+    <button class="page-btn" (click)="goToPage(page - 1)" [disabled]="page <= 1">Previous</button>
+    <span>Page {{ page }} / {{ totalPages }}</span>
+    <button class="page-btn" (click)="goToPage(page + 1)" [disabled]="page >= totalPages">Next</button>
+  </footer>
+</section>

@@ -1,0 +1,98 @@
+<section class="page">
+  <h2>My Listings</h2>
+
+  <div class="filters">
+    <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+      <option value="">All Statuses</option>
+      <option value="pending">Pending</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+    </select>
+
+    <select [(ngModel)]="selectedType" (change)="applyFilters()">
+      <option value="">All Types</option>
+      <option value="sale">Sell</option>
+      <option value="rent">Rent</option>
+    </select>
+
+    <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
+      <option value="">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
+    </select>
+
+    <input
+      type="text"
+      placeholder="Search listings..."
+      [(ngModel)]="searchTerm"
+      (input)="applyFilters()"
+      class="search-input"
+    />
+  </div>
+
+  <div *ngIf="isLoading" class="state">Loading your listings...</div>
+  <div *ngIf="errorMsg && !isLoading" class="state error">{{ errorMsg }}</div>
+
+  <div *ngIf="!isLoading && displayedProducts.length > 0" class="table-wrap">
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of displayedProducts">
+          <td><img [src]="getImage(product)" alt="{{ product.name }}" class="thumbnail" /></td>
+          <td>{{ product.name }}</td>
+          <td>{{ getPrice(product) }}</td>
+          <td>{{ product.type | titlecase }}</td>
+          <td>
+            <span
+              class="status"
+              [ngClass]="{
+                'status-approved': product.status === 'approved' && product.isActive,
+                'status-paused': product.status === 'approved' && !product.isActive,
+                'status-pending': product.status === 'pending',
+                'status-rejected': product.status === 'rejected'
+              }"
+            >
+              {{ product.status | titlecase }} {{ product.status === 'approved' ? (product.isActive ? '(Active)' : '(Paused)') : '' }}
+            </span>
+          </td>
+          <td class="actions-col">
+            <div class="actions">
+            <ng-container *ngIf="product.status === 'approved'">
+              <button class="btn warn" [disabled]="!product.isActive" (click)="editProduct(product)">Edit</button>
+              <button class="btn" [ngClass]="product.isActive ? 'danger' : 'success'" (click)="toggleActive(product)">
+                {{ product.isActive ? 'Pause' : 'Activate' }}
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="product.status === 'rejected'">
+              <button class="btn primary" (click)="resubmitProduct(product)">Edit & Resubmit</button>
+            </ng-container>
+
+            <ng-container *ngIf="product.status === 'pending'">
+              <span class="pending-note">Waiting admin approval</span>
+            </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading && displayedProducts.length === 0 && !errorMsg" class="state">
+    No listings found for current filters.
+  </div>
+
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+  </div>
+</section>

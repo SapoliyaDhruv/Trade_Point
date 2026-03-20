@@ -1,0 +1,61 @@
+<div class="admin-page">
+  <div class="page-head">
+    <h2>Approve Product Listings</h2>
+    <p>Review pending product submissions from sellers.</p>
+  </div>
+
+  <div class="card" *ngIf="!isLoading; else loading">
+    <div class="table-wrap" *ngIf="displayedProducts.length > 0; else noData">
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Seller</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of displayedProducts">
+            <td>
+              <img [src]="getImage(product)" alt="{{ product.name }}" class="thumb" />
+            </td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.seller.firstName }} {{ product.seller.lastName || '' }}</td>
+            <td>{{ getPrice(product) }}</td>
+            <td>{{ product.category?.name || 'Unknown' }}</td>
+            <td>
+              <span class="status-badge pending" *ngIf="product.status === 'pending'">Pending</span>
+              <span class="status-badge approved" *ngIf="product.status === 'approved'">Approved</span>
+              <span class="status-badge rejected" *ngIf="product.status === 'rejected'">Rejected</span>
+            </td>
+            <td class="actions" *ngIf="product.status === 'pending'">
+              <button class="btn approve" (click)="approveProduct(product)">Approve</button>
+              <button class="btn reject" (click)="rejectProduct(product)">Reject</button>
+            </td>
+            <td *ngIf="product.status !== 'pending'">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+      <button *ngFor="let page of pages" (click)="goToPage(page)" [class.active]="page === currentPage">{{ page }}</button>
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+  </div>
+
+  <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
+</div>
+
+<ng-template #loading>
+  <div class="empty">Loading pending products...</div>
+</ng-template>
+
+<ng-template #noData>
+  <div class="empty">No pending products found.</div>
+</ng-template>

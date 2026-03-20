@@ -1,0 +1,45 @@
+<div class="admin-page">
+  <div class="page-head">
+    <h2>Pending Payment Approvals</h2>
+    <p>Approve or reject buyer payments waiting for admin confirmation.</p>
+  </div>
+
+  <div *ngIf="loading" class="empty">Loading pending transactions...</div>
+  <div *ngIf="error" class="alert error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && transactions.length === 0" class="empty">
+    No pending transactions to approve.
+  </div>
+
+  <div class="card" *ngIf="transactions.length > 0">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Buyer</th>
+            <th>Seller</th>
+            <th>Amount</th>
+            <th>Platform Fee</th>
+            <th>Seller Gets</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tx of transactions">
+            <td data-label="Product">{{ tx.productId?.name || 'N/A' }}</td>
+            <td data-label="Buyer">{{ tx.buyerId?.firstName }} {{ tx.buyerId?.lastName }}</td>
+            <td data-label="Seller">{{ tx.ownerId?.firstName }} {{ tx.ownerId?.lastName }}</td>
+            <td data-label="Amount" class="money">&#8377;{{ tx.totalAmount | number:'1.0-0' }}</td>
+            <td data-label="Platform Fee" class="fee">&#8377;{{ tx.platformFee | number:'1.0-0' }}</td>
+            <td data-label="Seller Gets" class="money">&#8377;{{ tx.ownerAmount | number:'1.0-0' }}</td>
+            <td data-label="Actions" class="actions">
+              <button class="btn approve" (click)="approve(tx)">Approve</button>
+              <button class="btn reject" (click)="reject(tx)">Reject</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

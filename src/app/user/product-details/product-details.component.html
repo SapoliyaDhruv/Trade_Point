@@ -1,0 +1,88 @@
+<section class="product-details-wrapper">
+  <button class="back-btn" (click)="goBack()">Back to Browse Products</button>
+
+  <div *ngIf="isLoading()" class="state-card">Loading product...</div>
+  <div *ngIf="errorMsg() && !isLoading()" class="state-card error">{{ errorMsg() }}</div>
+
+  <ng-container *ngIf="product() as prod">
+    <div class="product-hero">
+      <div class="hero-image">
+        <img [src]="mainImageUrl()" [alt]="prod.name" (error)="handleImageError($event)" />
+
+        <div class="thumbnail-row" *ngIf="hasMultiplePhotos()">
+          <img
+            *ngFor="let photo of prod.photos"
+            [src]="getCleanImageUrl(photo)"
+            (click)="setMainImage(photo)"
+            [class.active]="mainImageUrl() === getCleanImageUrl(photo)"
+          />
+        </div>
+      </div>
+
+      <div class="hero-price-card">
+        <div class="badges">
+          <span class="status-badge" [ngClass]="prod.status">{{ prod.status | titlecase }}</span>
+          <span class="type-badge" [class.sale]="prod.type === 'sale'" [class.rent]="prod.type === 'rent'">
+            {{ prod.type | titlecase }}
+          </span>
+          <span class="availability-badge" [class.active]="prod.isActive" [class.paused]="!prod.isActive">
+            {{ prod.isActive ? 'Available' : 'Paused' }}
+          </span>
+        </div>
+
+        <h1>{{ prod.name }}</h1>
+
+        <ng-container *ngIf="prod.type === 'sale'">
+          <div class="price-range">Rs. {{ prod.salePriceMin }} - Rs. {{ prod.salePriceMax }}</div>
+        </ng-container>
+
+        <ng-container *ngIf="prod.type === 'rent'">
+          <div class="price-range">Rs. {{ prod.rentPricePerDay }} / day</div>
+          <div class="price-detail" *ngIf="prod.rentPricePerHour">Hourly: Rs. {{ prod.rentPricePerHour }}</div>
+          <div class="price-detail late-penalty">Late Penalty: Rs. {{ prod.latePenaltyPerDay }} / day</div>
+        </ng-container>
+
+        <button class="primary-btn" *ngIf="canMakeOffer()" (click)="openOfferModal()">Make an Offer</button>
+        <button class="primary-btn" *ngIf="isOfferable() && !canMakeOffer()" (click)="goToLogin()">
+          Login to make an offer
+        </button>
+        <button class="secondary-btn" *ngIf="canUseWishlist()" (click)="toggleWishlist()">
+          {{ inWishlist() ? 'Remove from Wishlist' : 'Save to Wishlist' }}
+        </button>
+        <button class="secondary-btn" *ngIf="!canUseWishlist()" (click)="goToLogin()">Login to save</button>
+        <p class="price-hint" *ngIf="isOfferable()">{{ offerHint() }}</p>
+        <p class="price-hint" *ngIf="!canUseWishlist()">{{ wishlistHint() }}</p>
+        <p class="price-hint paused" *ngIf="!prod.isActive">This product is currently paused by seller.</p>
+
+        <div class="seller-box">
+          <strong>Seller</strong>
+          <p>{{ prod.seller?.firstName }} {{ prod.seller?.lastName }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="details-card">
+      <h3>Description</h3>
+      <p>{{ prod.description }}</p>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <label>Category</label>
+        <span>{{ prod.category?.name }}</span>
+      </div>
+      <div class="info-item">
+        <label>Age</label>
+        <span>{{ prod.ageYears }} years</span>
+      </div>
+      <div class="info-item">
+        <label>Location</label>
+        <span>{{ prod.location }}</span>
+      </div>
+      <div class="info-item">
+        <label>Listed</label>
+        <span>{{ prod.createdAt | date:'mediumDate' }}</span>
+      </div>
+    </div>
+  </ng-container>
+</section>

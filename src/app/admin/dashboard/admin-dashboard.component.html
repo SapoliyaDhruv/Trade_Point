@@ -1,0 +1,296 @@
+<div class="admin-dashboard-page">
+  <div class="dashboard-header">
+    <div>
+      <h1>Admin Dashboard</h1>
+      <p>Operations center for risk, moderation, commission, analytics, and user broadcasts.</p>
+    </div>
+    <button class="refresh-btn" (click)="loadAll()">Refresh All</button>
+  </div>
+
+  <div class="state-card" *ngIf="loading">Loading dashboard data...</div>
+  <div class="state-card error" *ngIf="!loading && error">{{ error }}</div>
+
+  <ng-container *ngIf="!loading && overview as data">
+    <section class="metric-grid">
+      <article class="metric-card">
+        <span class="metric-label">Total Users</span>
+        <strong class="metric-value">{{ data.users.totalUsers }}</strong>
+        <span class="metric-note">Verified: {{ data.users.verifiedUsers }}</span>
+      </article>
+
+      <article class="metric-card">
+        <span class="metric-label">Total Listings</span>
+        <strong class="metric-value">{{ data.products.totalProducts }}</strong>
+        <span class="metric-note">Active Approved: {{ data.products.activeProducts }}</span>
+      </article>
+
+      <article class="metric-card">
+        <span class="metric-label">Pending Product Approvals</span>
+        <strong class="metric-value warn">{{ data.products.pendingProducts }}</strong>
+        <a class="metric-link" routerLink="/admin/products/approve">Review products</a>
+      </article>
+
+      <article class="metric-card">
+        <span class="metric-label">Pending Payment Approvals</span>
+        <strong class="metric-value warn">{{ data.transactions.pendingTransactions }}</strong>
+        <a class="metric-link" routerLink="/admin/pending-transactions">Review payments</a>
+      </article>
+
+      <article class="metric-card">
+        <span class="metric-label">Completed Sales</span>
+        <strong class="metric-value">{{ data.products.soldProducts }}</strong>
+        <span class="metric-note">Rented Out: {{ data.products.rentedProducts }}</span>
+      </article>
+
+      <article class="metric-card">
+        <span class="metric-label">Approved Transactions</span>
+        <strong class="metric-value success">{{ data.transactions.approvedTransactions }}</strong>
+        <span class="metric-note">Rejected: {{ data.transactions.rejectedTransactions }}</span>
+      </article>
+    </section>
+
+    <section class="finance-grid">
+      <article class="finance-card">
+        <span>Gross Platform Volume</span>
+        <strong>&#8377;{{ data.finance.grossVolume | number:'1.0-0' }}</strong>
+      </article>
+      <article class="finance-card">
+        <span>Platform Revenue</span>
+        <strong>&#8377;{{ data.finance.platformRevenue | number:'1.0-0' }}</strong>
+      </article>
+      <article class="finance-card">
+        <span>Seller Payouts</span>
+        <strong>&#8377;{{ data.finance.sellerPayouts | number:'1.0-0' }}</strong>
+      </article>
+    </section>
+
+    <section class="panel analytics-panel">
+      <div class="panel-header">
+        <h2>Admin Analytics</h2>
+        <div class="inline-actions">
+          <button [class.active]="analyticsDays === 7" (click)="loadAnalytics(7)">7D</button>
+          <button [class.active]="analyticsDays === 14" (click)="loadAnalytics(14)">14D</button>
+          <button [class.active]="analyticsDays === 30" (click)="loadAnalytics(30)">30D</button>
+        </div>
+      </div>
+
+      <div class="empty" *ngIf="analyticsLoading">Loading analytics...</div>
+
+      <ng-container *ngIf="!analyticsLoading && analytics as a">
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>New Users</h3>
+            <div class="spark-bars">
+              <div class="bar-wrap" *ngFor="let item of a.series.newUsers; let i = index">
+                <div class="bar" [style.height]="barHeight(item, maxFrom(a.series.newUsers))"></div>
+                <span>{{ shortDate(a.labels[i]) }}</span>
+              </div>
+            </div>
+            <strong>{{ a.totals.newUsers }}</strong>
+          </div>
+
+          <div class="chart-card">
+            <h3>New Listings</h3>
+            <div class="spark-bars">
+              <div class="bar-wrap" *ngFor="let item of a.series.newProducts; let i = index">
+                <div class="bar" [style.height]="barHeight(item, maxFrom(a.series.newProducts))"></div>
+                <span>{{ shortDate(a.labels[i]) }}</span>
+              </div>
+            </div>
+            <strong>{{ a.totals.newProducts }}</strong>
+          </div>
+
+          <div class="chart-card">
+            <h3>Approved Deals</h3>
+            <div class="spark-bars">
+              <div class="bar-wrap" *ngFor="let item of a.series.approvedTransactions; let i = index">
+                <div class="bar" [style.height]="barHeight(item, maxFrom(a.series.approvedTransactions))"></div>
+                <span>{{ shortDate(a.labels[i]) }}</span>
+              </div>
+            </div>
+            <strong>{{ a.totals.approvedTransactions }}</strong>
+          </div>
+        </div>
+      </ng-container>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Recent Pending Payments</h2>
+        <a routerLink="/admin/pending-transactions">View all</a>
+      </div>
+
+      <div class="empty" *ngIf="data.recentPendingTransactions.length === 0">
+        No pending payment approvals right now.
+      </div>
+
+      <div class="table-wrap" *ngIf="data.recentPendingTransactions.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Buyer</th>
+              <th>Seller</th>
+              <th>Amount</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tx of data.recentPendingTransactions">
+              <td>{{ tx.productName }} ({{ tx.productType | uppercase }})</td>
+              <td>{{ tx.buyerName }}</td>
+              <td>{{ tx.sellerName }}</td>
+              <td>&#8377;{{ tx.totalAmount | number:'1.0-0' }}</td>
+              <td>{{ tx.createdAt | date:'medium' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dual-grid">
+      <article class="panel">
+        <div class="panel-header">
+          <h2>Commission Management</h2>
+        </div>
+
+        <div class="empty" *ngIf="commissionLoading">Loading commission settings...</div>
+
+        <ng-container *ngIf="!commissionLoading && commissionData as commission">
+          <div class="commission-row">
+            <label>Default Commission (%)</label>
+            <input type="number" min="0" max="100" [(ngModel)]="defaultCommissionPercent">
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="applyDefaultToAllCategories">
+              Apply to all categories
+            </label>
+            <button (click)="saveDefaultCommission()">Save</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Commission %</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let c of commission.categories">
+                  <td>{{ c.name }}</td>
+                  <td>{{ c.status | uppercase }}</td>
+                  <td>
+                    <input type="number" min="0" max="100" [(ngModel)]="categoryFeeDrafts[c._id]">
+                  </td>
+                  <td>
+                    <button (click)="saveCategoryCommission(c._id)">Update</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <h2>Broadcast Notifications</h2>
+        </div>
+
+        <div class="broadcast-form">
+          <label>Target Audience</label>
+          <select [(ngModel)]="broadcastTarget">
+            <option value="all">All Users</option>
+            <option value="verified">Verified Users</option>
+            <option value="unverified">Unverified Users</option>
+            <option value="sellers">Sellers</option>
+            <option value="buyers">Buyers</option>
+          </select>
+
+          <label>Title</label>
+          <input type="text" [(ngModel)]="broadcastTitle" placeholder="Maintenance update, policy change, etc.">
+
+          <label>Message</label>
+          <textarea rows="4" [(ngModel)]="broadcastMessage" placeholder="Type the message users should receive"></textarea>
+
+          <label>Optional Link</label>
+          <input type="text" [(ngModel)]="broadcastLink" placeholder="/user/notifications">
+
+          <button (click)="sendBroadcast()" [disabled]="sendingBroadcast">
+            {{ sendingBroadcast ? 'Sending...' : 'Send Broadcast' }}
+          </button>
+          <p class="status-text" *ngIf="broadcastStatus">{{ broadcastStatus }}</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="dual-grid">
+      <article class="panel">
+        <div class="panel-header">
+          <h2>Risk Flags</h2>
+          <button class="mini-btn" (click)="loadRiskFlags()">Refresh</button>
+        </div>
+
+        <div class="empty" *ngIf="riskLoading">Loading risk signals...</div>
+
+        <ng-container *ngIf="!riskLoading && riskFlags as risk">
+          <div class="risk-chip-row">
+            <span class="risk-chip">High Value Threshold: &#8377;{{ risk.highValueThreshold | number:'1.0-0' }}</span>
+            <span class="risk-chip warning">High Value Pending: {{ risk.highValuePending.length }}</span>
+            <span class="risk-chip danger">Flagged Products: {{ risk.flaggedProducts.length }}</span>
+          </div>
+
+          <h4>Repeated Rejected Buyers</h4>
+          <div class="empty" *ngIf="risk.repeatedRejectedBuyers.length === 0">No repeated rejected buyers in last 30 days.</div>
+          <ul class="simple-list" *ngIf="risk.repeatedRejectedBuyers.length > 0">
+            <li *ngFor="let buyer of risk.repeatedRejectedBuyers">
+              <span>{{ buyer.name }} ({{ buyer.email }})</span>
+              <strong>{{ buyer.rejectedCount }} rejects</strong>
+            </li>
+          </ul>
+
+          <h4>High Value Pending Payments</h4>
+          <div class="empty" *ngIf="risk.highValuePending.length === 0">No high-value pending payments.</div>
+          <ul class="simple-list" *ngIf="risk.highValuePending.length > 0">
+            <li *ngFor="let tx of risk.highValuePending">
+              <span>{{ tx.productName }} - {{ tx.buyerName }}</span>
+              <strong>&#8377;{{ tx.amount | number:'1.0-0' }}</strong>
+            </li>
+          </ul>
+        </ng-container>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <h2>Moderation Center</h2>
+          <button class="mini-btn" (click)="loadModeration()">Refresh</button>
+        </div>
+
+        <div class="empty" *ngIf="moderationLoading">Loading moderation data...</div>
+
+        <ng-container *ngIf="!moderationLoading && moderationData as m">
+          <label class="label">Blocked Keywords (comma separated)</label>
+          <textarea rows="3" [(ngModel)]="moderationKeywordsInput"></textarea>
+          <div class="inline-actions">
+            <button (click)="saveModerationKeywords(false)">Save Keywords</button>
+            <button (click)="saveModerationKeywords(true)">Save + Rescan Pending</button>
+          </div>
+
+          <h4>Flagged Pending Products</h4>
+          <div class="empty" *ngIf="m.flaggedPendingProducts.length === 0">No flagged pending products.</div>
+          <ul class="simple-list" *ngIf="m.flaggedPendingProducts.length > 0">
+            <li *ngFor="let p of m.flaggedPendingProducts">
+              <div>
+                <span>{{ p.name }} ({{ p.type | uppercase }})</span>
+                <small>{{ p.sellerName }} - {{ p.category }}</small>
+              </div>
+              <strong>{{ p.flags.join(', ') }}</strong>
+            </li>
+          </ul>
+        </ng-container>
+      </article>
+    </section>
+  </ng-container>
+</div>

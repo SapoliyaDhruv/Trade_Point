@@ -1,0 +1,190 @@
+<div class="home-shell">
+  <nav class="topbar">
+    <a class="brand" href="#">
+      <img src="trade-point-logo.png" alt="Trade Point" />
+      <span>Trade Point</span>
+    </a>
+
+    <div class="menu">
+      <a href="#featured">Top Products</a>
+      <a href="#trending">Trending</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#highlights">Why Trade Point</a>
+    </div>
+
+    <div class="actions">
+      <button class="ghost" (click)="goToLogin()">Login</button>
+      <button class="solid" (click)="goToSignup()">Get Started</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="kicker">Local marketplace you can trust</p>
+      <h1>Shop pre-owned, rent for a day, or sell in minutes.</h1>
+      <p class="sub">
+        Trade Point connects verified buyers and sellers with secure offers, transparent pricing, and fast local pickup.
+      </p>
+      <div class="cta-row">
+        <button class="solid" (click)="goToSignup()">Start selling</button>
+        <button class="ghost" (click)="goToBrowse()">Browse products</button>
+      </div>
+      <div class="hero-badges">
+        <span>Verified users</span>
+        <span>Secure offers</span>
+        <span>Local pickup</span>
+      </div>
+    </div>
+
+    <div class="hero-showcase">
+      <div class="showcase-card" *ngIf="featuredProducts.length > 0; else emptyShowcase">
+        <div class="showcase-image">
+          <img
+            [src]="getImage(featuredProducts[0])"
+            [alt]="featuredProducts[0].name"
+            (error)="handleImageError($event)"
+          />
+          <span class="pill" [class.rent]="featuredProducts[0].type === 'rent'">
+            {{ featuredProducts[0].type === 'rent' ? 'For Rent' : 'For Sale' }}
+          </span>
+        </div>
+        <div class="showcase-body">
+          <p class="showcase-kicker">Featured today</p>
+          <h3>{{ featuredProducts[0].name }}</h3>
+          <p class="showcase-meta">
+            {{ getCategoryName(featuredProducts[0]) }} * {{ getPrice(featuredProducts[0]) }}
+          </p>
+          <button class="ghost small" (click)="viewProduct(featuredProducts[0])">View details</button>
+        </div>
+      </div>
+      <ng-template #emptyShowcase>
+        <div class="showcase-card placeholder">
+          <p>Fresh listings appear here every day.</p>
+          <button class="ghost small" (click)="goToBrowse()">Browse products</button>
+        </div>
+      </ng-template>
+
+      <div class="showcase-strip" *ngIf="trendingCategories.length">
+        <span *ngFor="let category of trendingCategories">{{ category.name }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="featured" class="section">
+    <div class="section-head">
+      <div>
+        <h2>Top products right now</h2>
+        <p class="section-sub">Newest listings with the best value nearby.</p>
+      </div>
+      <button class="ghost" (click)="goToBrowse()">Browse all</button>
+    </div>
+
+    <div class="product-grid" *ngIf="!isLoadingFeatured; else featuredLoading">
+      <article class="product-card" *ngFor="let product of featuredProducts" (click)="viewProduct(product)">
+        <div class="product-image">
+          <img [src]="getImage(product)" [alt]="product.name" (error)="handleImageError($event)" />
+          <span class="pill" [class.rent]="product.type === 'rent'">
+            {{ product.type === 'rent' ? 'Rent' : 'Sale' }}
+          </span>
+        </div>
+        <div class="product-body">
+          <h3>{{ product.name }}</h3>
+          <p class="product-meta">{{ getCategoryName(product) }}</p>
+          <p class="product-price">{{ getPrice(product) }}</p>
+        </div>
+      </article>
+    </div>
+
+    <ng-template #featuredLoading>
+      <div class="product-grid">
+        <div class="product-card skeleton" *ngFor="let _ of skeletonItems">
+          <div class="skeleton-image"></div>
+          <div class="skeleton-line wide"></div>
+          <div class="skeleton-line"></div>
+        </div>
+      </div>
+    </ng-template>
+
+    <p class="section-empty" *ngIf="!isLoadingFeatured && !featuredProducts.length">
+      {{ featuredError || 'No products available yet.' }}
+    </p>
+  </section>
+
+  <section id="trending" class="section soft">
+    <div class="section-head">
+      <div>
+        <h2>Trending categories</h2>
+        <p class="section-sub">See what the community is listing the most.</p>
+      </div>
+      <button class="ghost" (click)="goToBrowse()">Explore categories</button>
+    </div>
+
+    <div class="category-grid" *ngIf="!isLoadingCategories; else categoryLoading">
+      <button class="category-card" *ngFor="let category of trendingCategories" (click)="browseCategory(category)">
+        <span class="category-name">{{ category.name }}</span>
+        <span class="category-count">
+          {{ category.count ? category.count + ' listings' : 'New arrivals' }}
+        </span>
+      </button>
+    </div>
+
+    <ng-template #categoryLoading>
+      <div class="category-grid">
+        <div class="category-card skeleton" *ngFor="let _ of skeletonItems">
+          <div class="skeleton-line wide"></div>
+          <div class="skeleton-line"></div>
+        </div>
+      </div>
+    </ng-template>
+
+    <p class="section-empty" *ngIf="!isLoadingCategories && !trendingCategories.length">
+      {{ categoriesError || 'Categories will appear here soon.' }}
+    </p>
+  </section>
+
+  <section id="how-it-works" class="section">
+    <div class="section-head">
+      <div>
+        <h2>How it works</h2>
+        <p class="section-sub">List, negotiate, and complete deals in a few steps.</p>
+      </div>
+    </div>
+    <div class="step-grid">
+      <article class="step" *ngFor="let step of steps">
+        <img [src]="step.image" [alt]="step.title" />
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.subtitle }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="highlights" class="section">
+    <div class="section-head">
+      <div>
+        <h2>Why Trade Point feels better</h2>
+        <p class="section-sub">Built for safe, transparent local trading.</p>
+      </div>
+    </div>
+    <div class="highlight-grid">
+      <article class="highlight" *ngFor="let item of highlights">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <h2>Ready to list your first item?</h2>
+      <p>Start selling or renting in minutes with verified buyers nearby.</p>
+    </div>
+    <div class="cta-actions">
+      <button class="solid" (click)="goToSignup()">Create account</button>
+      <button class="ghost" (click)="goToLogin()">Login</button>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>(c) 2026 Trade Point. Built for smooth local trading.</p>
+  </footer>
+</div>

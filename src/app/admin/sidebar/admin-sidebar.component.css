@@ -1,0 +1,552 @@
+/* ============================================================
+   ADMIN SIDEBAR — Refined Dark Luxury
+   ============================================================ */
+
+/* ─── VARIABLES ─── */
+:host {
+  --bg-deep:       var(--ad-sidebar-bg);
+  --bg-mid:        var(--ad-sidebar-surface);
+  --bg-hover:      var(--ad-sidebar-hover);
+  --accent:        var(--ad-accent);
+  --accent-glow:   var(--ad-accent);
+  --accent-light:  color-mix(in srgb, var(--ad-accent) 72%, white);
+  --accent-subtle: color-mix(in srgb, var(--ad-accent) 20%, transparent);
+  --text-primary:  var(--ad-sidebar-text);
+  --text-muted:    var(--ad-sidebar-muted);
+  --text-dim:      color-mix(in srgb, var(--ad-sidebar-muted) 70%, black);
+  --border:        var(--ad-sidebar-border);
+  --warn:          #facc15;
+  --danger:        #f87171;
+  --success:       #4ade80;
+  --radius:        10px;
+  --sidebar-w:     var(--tp-admin-sidebar-offset, 264px);
+}
+
+/* ─── ROOT ─── */
+.admin-sidebar {
+  width: var(--sidebar-w);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;                /* footer stays pinned */
+  font-family: 'Manrope', system-ui, sans-serif;
+  z-index: 100;
+}
+
+.sidebar-handle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-mid);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-handle svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sidebar-handle:hover {
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+
+/* ─── AMBIENT GLOW (top-left corner light) ─── */
+.sidebar-glow {
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--ad-accent) 35%, transparent) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── HEADER ─── */
+.sidebar-header {
+  position: relative;
+  z-index: 1;
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(96,165,250,0.2), rgba(59,130,246,0.08));
+  border: 1px solid rgba(96,165,250,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--accent);
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.sidebar-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-mid);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sidebar-toggle:hover {
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  transform: translateY(-1px);
+}
+
+.header-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.header-subtitle {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ─── SCROLLABLE MENU AREA ─── */
+.menu {
+  list-style: none;
+  padding: 12px 10px;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* custom thin scrollbar */
+.menu::-webkit-scrollbar              { width: 4px; }
+.menu::-webkit-scrollbar-track        { background: transparent; }
+.menu::-webkit-scrollbar-thumb        { background: var(--border); border-radius: 2px; }
+.menu::-webkit-scrollbar-thumb:hover  { background: rgba(255,255,255,0.12); }
+
+/* ─── DIVIDER ─── */
+.menu-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 8px;
+}
+
+/* ─── MENU ITEM LINK ─── */
+.menu-item a,
+.menu-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  position: relative;
+  white-space: nowrap;
+}
+
+.menu-item a:hover,
+.menu-title:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* ─── ACTIVE STATE ─── */
+.menu-item a.active {
+  background: var(--accent-subtle);
+  color: var(--accent-light);
+  box-shadow: inset 3px 0 0 var(--accent-glow);   /* left glow bar */
+}
+
+.menu-item a.active .menu-icon {
+  color: var(--accent);
+}
+
+/* ─── ICONS ─── */
+.menu-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+
+.menu-item a:hover .menu-icon {
+  color: var(--text-muted);
+}
+
+/* ─── COLLAPSIBLE GROUP ─── */
+.menu-group {
+  margin: 2px 0;
+}
+
+.menu-title {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.menu-title.active-group {
+  color: var(--accent-light);
+}
+
+.menu-title.active-group .menu-icon {
+  color: var(--accent);
+}
+
+/* ─── ARROW CHEVRON ─── */
+.arrow {
+  margin-left: auto;
+  color: var(--text-dim);
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1), color 0.2s;
+  flex-shrink: 0;
+}
+
+.menu-title:hover .arrow,
+.menu-title.active-group .arrow {
+  color: var(--text-muted);
+}
+
+.arrow.rotate {
+  transform: rotate(180deg);
+}
+
+/* ─── SUBMENU ─── */
+.submenu {
+  list-style: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(.4,0,.2,1);
+  padding: 0;
+  margin: 0;
+}
+
+.submenu-open {
+  max-height: 200px;
+}
+
+.submenu li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px 8px 38px;
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 400;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.submenu li a:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.submenu li a.active {
+  background: rgba(96,165,250,0.08);
+  color: var(--accent-light);
+}
+
+.submenu-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+
+.submenu li a:hover .submenu-icon,
+.submenu li a.active .submenu-icon {
+  color: var(--accent);
+}
+
+/* ─── PENDING PAYMENTS (highlighted) ─── */
+.pending-payments-link {
+  color: var(--warn) !important;
+}
+
+.pending-payments-link .menu-icon {
+  color: var(--warn) !important;
+}
+
+.pending-payments-link:hover {
+  background: rgba(250,204,21,0.08) !important;
+}
+
+/* notification badge */
+.badge {
+  margin-left: auto;
+  background: var(--warn);
+  color: #0f172a;
+  font-size: 0.68rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(250,204,21,0.5); }
+  50%      { box-shadow: 0 0 0 5px rgba(250,204,21,0); }
+}
+
+/* ─── FOOTER ─── */
+.sidebar-footer {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  padding: 14px 10px 18px;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, transparent, rgba(8,14,26,0.6));
+}
+
+/* ─── PROFILE CARD ─── */
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--bg-mid);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+
+.profile-img-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sidebar-profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+}
+
+/* online indicator dot */
+.online-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  background: var(--success);
+  border: 2px solid var(--bg-deep);
+  border-radius: 50%;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.profile-name {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-role {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── LOGOUT BUTTON ─── */
+.logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius);
+  color: var(--danger);
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-align: left;
+}
+
+.logout .menu-icon {
+  color: var(--danger);
+}
+
+.logout:hover {
+  background: rgba(248,113,113,0.1);
+  color: #fca5a5;
+}
+
+.logout:hover .menu-icon {
+  color: #fca5a5;
+}
+
+:host-context(.admin-sidebar-collapsed) .admin-sidebar {
+  width: var(--tp-admin-sidebar-collapsed);
+}
+
+:host-context(.admin-sidebar-collapsed) .header-text,
+:host-context(.admin-sidebar-collapsed) .menu-item a span,
+:host-context(.admin-sidebar-collapsed) .menu-title span,
+:host-context(.admin-sidebar-collapsed) .submenu,
+:host-context(.admin-sidebar-collapsed) .profile-info,
+:host-context(.admin-sidebar-collapsed) .logout span {
+  display: none;
+}
+
+:host-context(.admin-sidebar-collapsed) .header-content {
+  justify-content: center;
+}
+
+:host-context(.admin-sidebar-collapsed) .menu-item a,
+:host-context(.admin-sidebar-collapsed) .menu-title {
+  justify-content: center;
+  padding: 10px;
+}
+
+:host-context(.admin-sidebar-collapsed) .menu-title .arrow {
+  display: none;
+}
+
+:host-context(.admin-sidebar-collapsed) .sidebar-footer {
+  padding: 14px 8px 18px;
+}
+
+:host-context(.admin-sidebar-collapsed) .profile-card {
+  justify-content: center;
+}
+
+:host-context(.admin-sidebar-collapsed) .logout {
+  justify-content: center;
+}
+
+:host-context(.admin-sidebar-collapsed) .sidebar-toggle {
+  transform: rotate(180deg);
+}
+
+:host-context(.admin-sidebar-collapsed) .sidebar-handle {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+@media (max-width: 992px) {
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(300px, 88vw);
+    height: 100vh;
+    border-right: 1px solid var(--border);
+    box-shadow: 10px 0 28px rgba(0, 0, 0, 0.35);
+    transform: translateX(-110%);
+    transition: transform 0.25s ease;
+  }
+
+  .menu {
+    max-height: none;
+    overflow: auto;
+  }
+
+  :host-context(.admin-sidebar-collapsed) .admin-sidebar {
+    width: 100%;
+  }
+
+  :host-context(.admin-sidebar-collapsed) .header-text,
+  :host-context(.admin-sidebar-collapsed) .menu-item a span,
+  :host-context(.admin-sidebar-collapsed) .menu-title span,
+  :host-context(.admin-sidebar-collapsed) .submenu,
+  :host-context(.admin-sidebar-collapsed) .profile-info,
+  :host-context(.admin-sidebar-collapsed) .logout span {
+    display: inline;
+  }
+
+  :host-context(.admin-sidebar-collapsed) .menu-item a,
+  :host-context(.admin-sidebar-collapsed) .menu-title {
+    justify-content: flex-start;
+    padding: 11px 14px;
+  }
+
+  .sidebar-handle {
+    display: none;
+  }
+
+  :host-context(.admin-sidebar-open) .admin-sidebar {
+    transform: translateX(0);
+  }
+}

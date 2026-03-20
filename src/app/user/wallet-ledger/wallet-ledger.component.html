@@ -1,0 +1,97 @@
+<section class="page">
+  <header class="header">
+    <div>
+      <p class="eyebrow">Wallet</p>
+      <h2>Escrow Wallet Ledger</h2>
+      <p class="sub">Track pending escrow, posted credits, and withdrawals.</p>
+    </div>
+  </header>
+
+  <section class="stats">
+    <article class="stat">
+      <p>Total Earned</p>
+      <h3>Rs. {{ wallet.totalEarned | number:'1.0-0' }}</h3>
+    </article>
+    <article class="stat">
+      <p>Total Withdrawn</p>
+      <h3>Rs. {{ wallet.totalWithdrawn | number:'1.0-0' }}</h3>
+    </article>
+    <article class="stat">
+      <p>Available Balance</p>
+      <h3>Rs. {{ wallet.availableBalance | number:'1.0-0' }}</h3>
+    </article>
+  </section>
+
+  <section class="filters">
+    <select [(ngModel)]="status" (change)="loadLedger(true)">
+      <option value="">All Status</option>
+      <option value="PENDING">Pending</option>
+      <option value="POSTED">Posted</option>
+      <option value="REVERSED">Reversed</option>
+    </select>
+
+    <select [(ngModel)]="direction" (change)="loadLedger(true)">
+      <option value="">All Direction</option>
+      <option value="CREDIT">Credit</option>
+      <option value="DEBIT">Debit</option>
+    </select>
+
+    <select [(ngModel)]="entryType" (change)="loadLedger(true)">
+      <option value="">All Entry Types</option>
+      <option value="ESCROW">Escrow</option>
+      <option value="PENALTY">Penalty</option>
+      <option value="WITHDRAWAL">Withdrawal</option>
+      <option value="ADJUSTMENT">Adjustment</option>
+    </select>
+
+    <button class="btn" (click)="loadLedger(true)">Apply</button>
+    <button class="btn ghost" (click)="clearFilters()">Clear</button>
+  </section>
+
+  <div class="state-card" *ngIf="loading">Loading wallet ledger...</div>
+  <div class="state-card error" *ngIf="!loading && error">{{ error }}</div>
+  <div class="state-card" *ngIf="!loading && !error && items.length === 0">No ledger entries found.</div>
+
+  <section class="card" *ngIf="!loading && !error && items.length > 0">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Direction</th>
+            <th>Amount</th>
+            <th>Effective</th>
+            <th>Reference</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of items">
+            <td>{{ row.createdAt | date:'medium' }}</td>
+            <td>{{ row.entryType }}</td>
+            <td>
+              <span class="chip" [class.pending]="row.status === 'PENDING'" [class.reversed]="row.status === 'REVERSED'">
+                {{ row.status }}
+              </span>
+            </td>
+            <td [class.credit]="row.direction === 'CREDIT'" [class.debit]="row.direction === 'DEBIT'">{{ row.direction }}</td>
+            <td>Rs. {{ row.amount | number:'1.0-0' }}</td>
+            <td [class.credit]="row.effectiveAmount > 0" [class.debit]="row.effectiveAmount < 0">
+              Rs. {{ row.effectiveAmount | number:'1.0-0' }}
+            </td>
+            <td>{{ row.reference || '-' }}</td>
+            <td>{{ row.description || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="pagination" *ngIf="!loading && totalPages > 1">
+    <button class="page-btn" (click)="goToPage(page - 1)" [disabled]="page <= 1">Previous</button>
+    <span>Page {{ page }} / {{ totalPages }} ({{ total }} entries)</span>
+    <button class="page-btn" (click)="goToPage(page + 1)" [disabled]="page >= totalPages">Next</button>
+  </footer>
+</section>

@@ -1,0 +1,123 @@
+.admin-page {
+  margin-left: var(--tp-admin-sidebar-offset);
+  min-height: 100vh;
+  padding: var(--ad-page-padding);
+  background: var(--ad-bg);
+  color: var(--ad-text);
+}
+
+.page-head {
+  margin-bottom: 14px;
+}
+
+.page-head h2 {
+  margin: 0;
+  font-size: 1.55rem;
+}
+
+.page-head p {
+  margin: 6px 0 0;
+  color: var(--ad-muted);
+}
+
+.card {
+  background: var(--ad-card);
+  border: 1px solid var(--ad-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ad-border);
+  white-space: nowrap;
+}
+
+th {
+  color: var(--ad-muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+th:last-child,
+td:last-child {
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border: 1px solid var(--ad-border);
+  font-weight: 700;
+}
+
+.badge.role.admin {
+  background: color-mix(in srgb, var(--ad-accent) 24%, var(--ad-card));
+  color: var(--ad-accent);
+}
+
+.badge.role.user {
+  background: var(--ad-card-alt);
+  color: var(--ad-muted);
+}
+
+.badge.verify.ok {
+  background: color-mix(in srgb, #22c55e 20%, var(--ad-card));
+  color: #16a34a;
+}
+
+.badge.verify.no {
+  background: color-mix(in srgb, #ef4444 16%, var(--ad-card));
+  color: #ef4444;
+}
+
+.action-cell button {
+  border: 1px solid var(--ad-border);
+  border-radius: 10px;
+  padding: 7px 11px;
+  color: var(--ad-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.promote {
+  background: color-mix(in srgb, #22c55e 20%, var(--ad-card));
+}
+
+.demote {
+  background: color-mix(in srgb, #ef4444 16%, var(--ad-card));
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.empty {
+  border: 1px dashed var(--ad-border);
+  background: var(--ad-card);
+  border-radius: 14px;
+  padding: 24px;
+  color: var(--ad-muted);
+}
+
+@media (max-width: 992px) {
+  .admin-page {
+    margin-left: 0;
+    padding: var(--ad-page-padding-mobile);
+  }
+}

@@ -1,1 +1,318 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --tp-user-sidebar-offset: 0px;
+  --tp-user-sidebar-collapsed: 72px;
+  --tp-admin-sidebar-offset: 0px;
+  --tp-admin-sidebar-collapsed: 76px;
+  --tp-page-padding: 2rem 1.5rem;
+  --tp-page-padding-mobile: 1.1rem 1rem;
+  --ad-page-padding: 24px 20px;
+  --ad-page-padding-mobile: 14px 12px;
+
+  --tp-bg: #f4f7fb;
+  --tp-surface: #ffffff;
+  --tp-card: #f9fbff;
+  --tp-text: #162337;
+  --tp-muted: #5f6f86;
+  --tp-border: #dbe4f0;
+  --tp-accent: #0f766e;
+  --tp-accent-2: #1d4ed8;
+  --tp-success: #059669;
+  --tp-shadow-sm: 0 8px 18px rgba(15, 23, 42, 0.08);
+  --tp-shadow-md: 0 20px 40px rgba(15, 23, 42, 0.14);
+
+  --ad-bg: #eef3fb;
+  --ad-card: #ffffff;
+  --ad-card-alt: #f6f9ff;
+  --ad-text: #122033;
+  --ad-muted: #5d6f89;
+  --ad-border: #d9e3f2;
+  --ad-accent: #2563eb;
+  --ad-sidebar-bg: #0a1224;
+  --ad-sidebar-surface: #131f36;
+  --ad-sidebar-hover: #1a2842;
+  --ad-sidebar-text: #dce6f7;
+  --ad-sidebar-muted: #8ea3c2;
+  --ad-sidebar-border: rgba(38, 56, 86, 0.7);
+}
+
+body.user-layout-active {
+  --tp-user-sidebar-offset: 260px;
+}
+
+body.user-layout-active.user-sidebar-collapsed {
+  --tp-user-sidebar-offset: var(--tp-user-sidebar-collapsed);
+}
+
+body.admin-layout-active {
+  --tp-admin-sidebar-offset: 280px;
+}
+
+body.admin-layout-active.admin-sidebar-collapsed {
+  --tp-admin-sidebar-offset: var(--tp-admin-sidebar-collapsed);
+}
+
+@media (max-width: 980px) {
+  body.user-layout-active {
+    --tp-user-sidebar-offset: 0px;
+  }
+}
+
+@media (max-width: 992px) {
+  body.admin-layout-active {
+    --tp-admin-sidebar-offset: 0px;
+  }
+}
+
+[data-theme='dark'] {
+  --tp-bg: #0f1115;
+  --tp-surface: #151820;
+  --tp-card: #1b2029;
+  --tp-text: #f5f7fb;
+  --tp-muted: #b2bac7;
+  --tp-border: #2a313c;
+  --tp-accent: #4f8cff;
+  --tp-accent-2: #f59e0b;
+  --tp-success: #22c55e;
+  --tp-shadow-sm: 0 10px 22px rgba(7, 9, 12, 0.45);
+  --tp-shadow-md: 0 24px 52px rgba(7, 9, 12, 0.62);
+
+  --ad-bg: #0d1016;
+  --ad-card: #151a23;
+  --ad-card-alt: #1b2230;
+  --ad-text: #f2f5fb;
+  --ad-muted: #aab4c4;
+  --ad-border: #283040;
+  --ad-accent: #4f8cff;
+  --ad-sidebar-bg: #0b0f16;
+  --ad-sidebar-surface: #111722;
+  --ad-sidebar-hover: #1a2230;
+  --ad-sidebar-text: #e9eef7;
+  --ad-sidebar-muted: #96a3b8;
+  --ad-sidebar-border: rgba(40, 48, 64, 0.9);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  background: var(--tp-bg);
+  color: var(--tp-text);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+body.user-layout-active :where(.page, .page-wrapper, .dashboard-content, .product-details-wrapper) {
+  padding: var(--tp-page-padding);
+}
+
+body.admin-layout-active :where(.admin-page, .admin-dashboard-page) {
+  padding: var(--ad-page-padding);
+}
+
+body.user-layout-active :where(.page-head, .section-head, .header, .dashboard-header) {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+body.admin-layout-active :where(.page-head, .dashboard-header, .panel-header) {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+body.user-layout-active :where(button, .btn, .primary-btn, .secondary-btn, .ghost, .solid, .cta, .refresh, .refresh-btn, .withdraw-btn, .mini-btn),
+body.admin-layout-active :where(button, .btn, .logout, .refresh-btn, .mini-btn, .inline-actions button, .panel button) {
+  font-family: inherit;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+body.user-layout-active :where(button, .btn, .primary-btn, .secondary-btn, .ghost, .solid, .cta, .refresh, .refresh-btn, .withdraw-btn, .mini-btn):hover:not(:disabled),
+body.admin-layout-active :where(button, .btn, .logout, .refresh-btn, .mini-btn, .inline-actions button, .panel button):hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+body.user-layout-active :where(.solid, .primary-btn, .btn.primary, .btn.success),
+body.admin-layout-active :where(.btn.primary, .btn.save, .btn.approve, .refresh-btn, .mini-btn, .inline-actions button.active) {
+  filter: brightness(1.02);
+}
+
+body.user-layout-active main a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+body.user-layout-active main a:hover {
+  color: var(--tp-accent);
+}
+
+body.admin-layout-active main a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+body.admin-layout-active main a:hover {
+  color: var(--ad-accent);
+}
+
+body.user-layout-active :where(button, a, .btn, .primary-btn, .secondary-btn, .ghost, .solid, .cta):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--tp-accent) 60%, transparent);
+  outline-offset: 2px;
+}
+
+body.admin-layout-active :where(button, a, .btn, .logout, .refresh-btn, .mini-btn):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ad-accent) 60%, transparent);
+  outline-offset: 2px;
+}
+
+body.user-layout-active :where(
+  .status-card,
+  .state-card,
+  .stat-card,
+  .wallet-panel,
+  .analytics-card,
+  .quick-card,
+  .details-card,
+  .info-item
+) {
+  border-radius: 14px;
+  box-shadow: var(--tp-shadow-sm);
+}
+
+body.admin-layout-active :where(
+  .state-card,
+  .panel,
+  .metric-card,
+  .chart-card,
+  .simple-list li
+) {
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(7, 9, 12, 0.18);
+}
+
+body.user-layout-active :where(.table-wrap, .list-table, .product-table),
+body.admin-layout-active :where(.table-wrap, .list-table, .product-table) {
+  overflow-x: auto;
+}
+
+body.user-layout-active table,
+body.admin-layout-active table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+@media (max-width: 720px) {
+  body.user-layout-active :where(input, select, textarea),
+  body.admin-layout-active :where(input, select, textarea) {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.7rem;
+  }
+
+  body.user-layout-active table,
+  body.admin-layout-active table {
+    min-width: 620px;
+  }
+
+  body.user-layout-active :where(.page h1, .dashboard-content h1, .page-wrapper h1, .product-details-wrapper h1) {
+    font-size: 1.5rem;
+  }
+
+  body.user-layout-active :where(.page h2, .dashboard-content h2, .page-wrapper h2, .product-details-wrapper h2) {
+    font-size: 1.2rem;
+  }
+
+  body.admin-layout-active :where(.admin-page h1, .admin-dashboard-page h1) {
+    font-size: 1.55rem;
+  }
+
+  body.admin-layout-active :where(.admin-page h2, .admin-dashboard-page h2) {
+    font-size: 1.2rem;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Keep offer dialog readable in both themes (Material overlay is outside component tree). */
+.tp-offer-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: var(--tp-surface) !important;
+  color: var(--tp-text) !important;
+  border: 1px solid var(--tp-border);
+}
+
+.tp-offer-dialog .offer-modal-container,
+.tp-offer-dialog .mat-mdc-dialog-title,
+.tp-offer-dialog .mat-mdc-dialog-content,
+.tp-offer-dialog .mat-mdc-dialog-actions,
+.tp-offer-dialog .offer-modal-container h2,
+.tp-offer-dialog .offer-modal-container p,
+.tp-offer-dialog .offer-modal-container strong {
+  color: var(--tp-text) !important;
+}
+
+.tp-offer-dialog .mat-mdc-text-field-wrapper {
+  background: var(--tp-card) !important;
+}
+
+.tp-offer-dialog .mdc-text-field--outlined .mdc-notched-outline__leading,
+.tp-offer-dialog .mdc-text-field--outlined .mdc-notched-outline__notch,
+.tp-offer-dialog .mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: var(--tp-border) !important;
+}
+
+.tp-offer-dialog .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.tp-offer-dialog .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.tp-offer-dialog .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--tp-accent) !important;
+}
+
+.tp-offer-dialog .mat-mdc-form-field-label,
+.tp-offer-dialog .mdc-floating-label,
+.tp-offer-dialog .mat-datepicker-toggle-default-icon,
+.tp-offer-dialog .mat-mdc-input-element::placeholder,
+.tp-offer-dialog textarea.mat-mdc-input-element::placeholder {
+  color: var(--tp-muted) !important;
+  opacity: 1 !important;
+}
+
+.tp-offer-dialog .mat-mdc-input-element,
+.tp-offer-dialog textarea.mat-mdc-input-element,
+.tp-offer-dialog .mdc-text-field--disabled .mdc-text-field__input {
+  color: var(--tp-text) !important;
+  -webkit-text-fill-color: var(--tp-text) !important;
+  caret-color: var(--tp-accent) !important;
+  opacity: 1 !important;
+}
+
+.tp-offer-dialog .mat-mdc-raised-button.mat-primary[disabled],
+.tp-offer-dialog .mat-mdc-raised-button.mat-primary.mdc-button--disabled {
+  background: color-mix(in srgb, var(--tp-accent) 28%, var(--tp-card)) !important;
+  opacity: 1 !important;
+}
+
+.tp-offer-dialog .mat-mdc-raised-button.mat-primary[disabled] .mdc-button__label,
+.tp-offer-dialog .mat-mdc-raised-button.mat-primary.mdc-button--disabled .mdc-button__label {
+  color: color-mix(in srgb, var(--tp-text) 80%, var(--tp-muted)) !important;
+}

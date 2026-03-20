@@ -1,0 +1,151 @@
+<section class="page profile-page">
+  <div *ngIf="isLoading" class="state">Loading your profile...</div>
+
+  <div *ngIf="!isLoading && errorMsg" class="state error">
+    <p>{{ errorMsg }}</p>
+    <button (click)="logout()" class="btn danger">Logout</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMsg && currentUser" class="profile-shell">
+    <header class="profile-hero">
+      <div class="hero-left">
+        <div class="avatar-wrap">
+          <img [src]="photoPreview" alt="Profile Photo" class="avatar" />
+          <label class="change-photo">
+            <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden />
+            Change Photo
+          </label>
+        </div>
+        <div class="hero-meta">
+          <h2>{{ currentUser?.firstName }} {{ currentUser?.lastName }}</h2>
+          <p class="email">{{ currentUser?.email }}</p>
+          <div class="badges">
+            <span class="role">{{ roleDisplay }}</span>
+            <span class="badge" *ngIf="profileForm.get('payoutMethod')?.value !== 'none'">
+              Payout: {{ profileForm.get('payoutMethod')?.value | titlecase }}
+            </span>
+            <span class="badge warn" *ngIf="profileForm.get('payoutMethod')?.value === 'none'">
+              Payout: Not set
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-note">
+          <h4>Account setup</h4>
+          <p>Complete your payout details to enable withdrawals and faster settlements.</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="profile-grid">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Profile & Payout</h3>
+            <p>Update your personal info and payout preferences.</p>
+          </div>
+        </div>
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <div class="form-row two">
+            <div>
+              <label>First Name</label>
+              <input formControlName="firstName" placeholder="First Name" />
+            </div>
+            <div>
+              <label>Last Name</label>
+              <input formControlName="lastName" placeholder="Last Name" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Email</label>
+            <input type="email" [value]="currentUser?.email || ''" disabled class="disabled" />
+          </div>
+
+          <div class="form-section">
+            <h4>Payout Account</h4>
+
+            <label>Payout Method</label>
+            <select formControlName="payoutMethod">
+              <option value="none">Not Configured</option>
+              <option value="bank">Bank Account</option>
+              <option value="upi">UPI</option>
+            </select>
+
+            <ng-container *ngIf="isBankMethod">
+              <label>Account Holder Name</label>
+              <input formControlName="accountHolderName" placeholder="Account holder full name" />
+
+              <label>Bank Name</label>
+              <input formControlName="bankName" placeholder="Bank name" />
+
+              <label>Account Number</label>
+              <input formControlName="accountNumber" placeholder="Account number" />
+
+              <label>IFSC Code</label>
+              <input formControlName="ifscCode" placeholder="HDFC0001234" />
+            </ng-container>
+
+            <ng-container *ngIf="isUpiMethod">
+              <label>UPI ID</label>
+              <input formControlName="upiId" placeholder="yourname@upi" />
+            </ng-container>
+
+            <small class="hint" *ngIf="profileForm.get('payoutMethod')?.value === 'none'">
+              Add payout details to enable withdrawals.
+            </small>
+            <small class="error-text" *ngIf="profileForm.get('accountNumber')?.errors?.['pattern'] && profileForm.get('accountNumber')?.touched">
+              Account number must be 6-20 digits.
+            </small>
+            <small class="error-text" *ngIf="profileForm.get('ifscCode')?.errors?.['pattern'] && profileForm.get('ifscCode')?.touched">
+              Enter a valid IFSC code.
+            </small>
+            <small class="error-text" *ngIf="profileForm.get('upiId')?.errors?.['pattern'] && profileForm.get('upiId')?.touched">
+              Enter a valid UPI ID.
+            </small>
+          </div>
+
+          <button type="submit" class="btn success" [disabled]="isLoading || profileForm.invalid">
+            {{ isLoading ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Security</h3>
+            <p>Update your password to keep your account secure.</p>
+          </div>
+        </div>
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+          <label>Current Password</label>
+          <input type="password" formControlName="currentPassword" />
+
+          <label>New Password</label>
+          <input type="password" formControlName="newPassword" />
+
+          <label>Confirm New Password</label>
+          <input type="password" formControlName="confirmPassword" />
+          <small *ngIf="passwordForm.errors?.['mismatch'] && passwordForm.get('confirmPassword')?.touched" class="error-text">
+            Passwords do not match
+          </small>
+
+          <button type="submit" class="btn primary" [disabled]="isLoading || passwordForm.invalid">
+            {{ isLoading ? 'Updating...' : 'Update Password' }}
+          </button>
+        </form>
+      </section>
+    </div>
+
+    <div class="messages">
+      <p *ngIf="successMsg" class="ok">{{ successMsg }}</p>
+      <p *ngIf="errorMsg" class="err">{{ errorMsg }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !currentUser && !errorMsg" class="state">
+    No profile data available.
+  </div>
+</section>

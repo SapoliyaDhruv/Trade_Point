@@ -1,0 +1,130 @@
+<div class="admin-page profile-page">
+  <header class="page-head">
+    <div>
+      <p class="kicker">Admin Identity</p>
+      <h2>Admin Profile</h2>
+      <p>Update personal details, photo, and password.</p>
+    </div>
+  </header>
+
+  <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
+  <div class="alert error" *ngIf="errorMsg">{{ errorMsg }}</div>
+  <div class="empty" *ngIf="isLoading">Loading profile...</div>
+
+  <div class="profile-shell" *ngIf="!isLoading">
+    <section class="profile-hero">
+      <div class="hero-left">
+        <div class="avatar-block">
+          <div class="avatar-wrap">
+            <img [src]="photoPreview || 'assets/default-avatar.png'" alt="Profile Photo" class="avatar" />
+            <label class="change-photo">
+              <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden />
+              Change Photo
+            </label>
+          </div>
+          <div class="photo-meta">
+            <p class="photo-hint">JPG/PNG, max 2MB.</p>
+            <p class="photo-file" *ngIf="selectedPhoto">Selected: {{ selectedPhoto.name }}</p>
+            <p class="field-error" *ngIf="photoError">{{ photoError }}</p>
+          </div>
+        </div>
+
+        <div class="hero-info">
+          <h3>{{ currentUser?.firstName }} {{ currentUser?.lastName }}</h3>
+          <p class="email">{{ currentUser?.email }}</p>
+          <span class="role-badge">{{ roleDisplay }}</span>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="profile-grid">
+      <section class="profile-card">
+        <div class="card-head">
+          <div>
+            <h3>Profile Details</h3>
+            <p>Personal information used across the admin panel.</p>
+          </div>
+        </div>
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <div class="grid two">
+            <div class="form-group">
+              <label>First Name</label>
+              <input formControlName="firstName" placeholder="First Name" />
+              <p class="field-error" *ngIf="profileForm.get('firstName')?.touched && profileForm.get('firstName')?.hasError('required')">
+                First name is required.
+              </p>
+              <p class="field-error" *ngIf="profileForm.get('firstName')?.touched && profileForm.get('firstName')?.hasError('minlength')">
+                First name must be at least 2 characters.
+              </p>
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input formControlName="lastName" placeholder="Last Name" />
+              <p class="field-error" *ngIf="profileForm.get('lastName')?.touched && profileForm.get('lastName')?.hasError('required')">
+                Last name is required.
+              </p>
+              <p class="field-error" *ngIf="profileForm.get('lastName')?.touched && profileForm.get('lastName')?.hasError('minlength')">
+                Last name must be at least 2 characters.
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" [value]="currentUser?.email || ''" disabled class="disabled-field" />
+          </div>
+
+          <button type="submit" class="btn primary" [disabled]="isLoading || profileForm.invalid">
+            {{ isLoading ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </form>
+      </section>
+
+      <section class="profile-card">
+        <div class="card-head">
+          <div>
+            <h3>Security</h3>
+            <p>Update your password to keep your account secure.</p>
+          </div>
+        </div>
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+          <div class="grid two">
+            <div class="form-group">
+              <label>Current Password</label>
+              <input type="password" formControlName="currentPassword" />
+              <p class="field-error" *ngIf="passwordForm.get('currentPassword')?.touched && passwordForm.get('currentPassword')?.hasError('required')">
+                Current password is required.
+              </p>
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" formControlName="newPassword" />
+              <p class="field-error" *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('required')">
+                New password is required.
+              </p>
+              <p class="field-error" *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('minlength')">
+                Use at least 8 characters.
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" formControlName="confirmPassword" />
+            <p class="field-error" *ngIf="passwordForm.get('confirmPassword')?.touched && passwordForm.get('confirmPassword')?.hasError('required')">
+              Please confirm the new password.
+            </p>
+            <p class="field-error" *ngIf="passwordForm.get('confirmPassword')?.touched && passwordForm.get('confirmPassword')?.hasError('mismatch')">
+              Passwords do not match.
+            </p>
+          </div>
+
+          <button type="submit" class="btn secondary" [disabled]="isLoading || passwordForm.invalid">
+            {{ isLoading ? 'Updating...' : 'Update Password' }}
+          </button>
+        </form>
+      </section>
+    </div>
+  </div>
+</div>

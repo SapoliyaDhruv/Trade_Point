@@ -1,0 +1,40 @@
+<section class="admin-page chat-page">
+  <header class="page-head">
+    <div>
+      <p class="kicker">Admin Channel</p>
+      <h2>Admin Chat</h2>
+      <p class="sub">Coordinate reviews, approvals, and escalations with other admins.</p>
+    </div>
+    <a class="ghost-link" routerLink="/admin/dashboard">Back to Dashboard</a>
+  </header>
+
+  <div *ngIf="loading" class="state">Loading admin chat...</div>
+  <div *ngIf="error && !loading" class="state error">{{ error }}</div>
+
+  <div class="chat-shell" *ngIf="!loading">
+    <div class="chat-card">
+      <div class="messages">
+        <div class="empty" *ngIf="messages.length === 0">No messages yet. Start the admin thread.</div>
+        <article class="bubble" *ngFor="let msg of messages" [class.mine]="isMine(msg)">
+          <div class="bubble-head">
+            <span class="name">{{ isMine(msg) ? 'You' : (msg?.admin?.name || 'Admin') }}</span>
+            <span class="time">{{ msg?.createdAt | date:'short' }}</span>
+          </div>
+          <p>{{ msg?.message }}</p>
+        </article>
+      </div>
+
+      <div class="composer">
+        <input
+          type="text"
+          [(ngModel)]="messageText"
+          placeholder="Write a message for the admin team..."
+          (keyup.enter)="sendMessage()"
+        />
+        <button (click)="sendMessage()" [disabled]="sending || !messageText.trim()">
+          {{ sending ? 'Sending...' : 'Send' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

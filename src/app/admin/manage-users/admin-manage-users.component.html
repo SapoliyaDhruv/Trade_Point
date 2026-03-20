@@ -1,0 +1,53 @@
+<div class="admin-page">
+  <div class="page-head">
+    <h2>Manage Users</h2>
+    <p>Control user roles and monitor verification status.</p>
+  </div>
+
+  <div *ngIf="loading" class="empty">Loading users...</div>
+
+  <div class="card" *ngIf="!loading && users.length > 0">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Verified</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="badge role" [class.admin]="user.role === 'admin'" [class.user]="user.role === 'user'">
+                {{ user.role | uppercase }}
+              </span>
+            </td>
+            <td>
+              <span class="badge verify" [class.ok]="user.isVerified" [class.no]="!user.isVerified">
+                {{ user.isVerified ? 'Verified' : 'Not Verified' }}
+              </span>
+            </td>
+            <td class="action-cell">
+              <button
+                type="button"
+                (click)="toggleRole(user)"
+                [disabled]="user.role === 'admin' && users.length === 1"
+                [class.promote]="user.role === 'user'"
+                [class.demote]="user.role === 'admin'"
+              >
+                {{ user.role === 'user' ? 'Promote' : 'Demote' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="empty" *ngIf="!loading && users.length === 0">No users found.</div>
+</div>

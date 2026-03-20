@@ -1,0 +1,199 @@
+<div class="admin-page">
+  <div class="page-head">
+    <div>
+      <h2>Earnings Reports</h2>
+      <p>Track platform earnings, seller payouts, and deal trends with exportable reports.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn solid" (click)="loadEarningsReport()">Apply Filters</button>
+      <button class="btn" (click)="exportEarningsCsv()" [disabled]="exportingEarnings">
+        {{ exportingEarnings ? 'Exporting...' : 'Export CSV' }}
+      </button>
+    </div>
+  </div>
+
+  <section class="card">
+    <div class="report-filters">
+      <div class="field">
+        <label>Range</label>
+        <select [(ngModel)]="reportRange" (change)="onReportRangeChange()">
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+          <option value="year">Year</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+
+      <div class="field" *ngIf="reportRange === 'month' || reportRange === 'year'">
+        <label>Year</label>
+        <input type="number" min="2000" max="2100" [(ngModel)]="reportYear">
+      </div>
+
+      <div class="field" *ngIf="reportRange === 'month'">
+        <label>Month</label>
+        <input type="number" min="1" max="12" [(ngModel)]="reportMonth">
+      </div>
+
+      <div class="field" *ngIf="reportRange === 'week'">
+        <label>Week Start Date</label>
+        <input type="date" [(ngModel)]="reportWeekStart">
+      </div>
+
+      <div class="field" *ngIf="reportRange === 'custom'">
+        <label>From</label>
+        <input type="date" [(ngModel)]="reportFrom">
+      </div>
+
+      <div class="field" *ngIf="reportRange === 'custom'">
+        <label>To</label>
+        <input type="date" [(ngModel)]="reportTo">
+      </div>
+
+      <div class="field">
+        <label>Group By</label>
+        <select [(ngModel)]="reportGroupBy">
+          <option value="day">Day</option>
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+          <option value="user">User</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>User Filter</label>
+        <select [(ngModel)]="reportUserId">
+          <option value="">All Users</option>
+          <option *ngFor="let user of reportUsers" [value]="user._id">
+            {{ user.name || user.email }} (&#8377;{{ user.totalEarning | number:'1.0-0' }})
+          </option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <div class="empty" *ngIf="reportUsersLoading">Loading users for filter...</div>
+  <div class="empty" *ngIf="earningsLoading">Loading earnings report...</div>
+  <div class="alert error" *ngIf="!earningsLoading && earningsError">{{ earningsError }}</div>
+
+  <ng-container *ngIf="!earningsLoading && !earningsError && earningsReport as report">
+    <div class="chip-row">
+      <span class="chip">Range: {{ report.filterSummary.label }}</span>
+      <span class="chip">Group: {{ report.filterSummary.groupBy | uppercase }}</span>
+      <span class="chip" *ngIf="report.filterSummary.selectedUser">
+        User: {{ report.filterSummary.selectedUser.name }}
+      </span>
+    </div>
+
+    <section class="metric-grid">
+      <article class="metric-card">
+        <span class="metric-label">Total Platform Earnings</span>
+        <strong class="metric-value success">&#8377;{{ report.totals.platformEarnings | number:'1.0-0' }}</strong>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Total Seller Earnings</span>
+        <strong class="metric-value">&#8377;{{ report.totals.sellerEarnings | number:'1.0-0' }}</strong>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Gross Volume</span>
+        <strong class="metric-value">&#8377;{{ report.totals.grossVolume | number:'1.0-0' }}</strong>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">Approved Deals</span>
+        <strong class="metric-value">{{ report.totals.dealCount }}</strong>
+      </article>
+    </section>
+
+    <section class="grid-2">
+      <article class="card">
+        <div class="card-head">
+          <h3>User Earnings Breakdown</h3>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Deals</th>
+                <th>Seller Earnings</th>
+                <th>Platform Contribution</th>
+                <th>Gross Volume</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of report.userBreakdown | slice:0:20">
+                <td>{{ row.name || row.email }}</td>
+                <td>{{ row.dealCount }}</td>
+                <td>&#8377;{{ row.sellerEarnings | number:'1.0-0' }}</td>
+                <td>&#8377;{{ row.platformContribution | number:'1.0-0' }}</td>
+                <td>&#8377;{{ row.grossVolume | number:'1.0-0' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <h3>Trend ({{ report.filterSummary.groupBy | uppercase }})</h3>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Bucket</th>
+                <th>Deals</th>
+                <th>Platform</th>
+                <th>Seller</th>
+                <th>Gross</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of report.trend | slice:0:24">
+                <td>{{ row.label }}</td>
+                <td>{{ row.dealCount }}</td>
+                <td>&#8377;{{ row.platformEarnings | number:'1.0-0' }}</td>
+                <td>&#8377;{{ row.sellerEarnings | number:'1.0-0' }}</td>
+                <td>&#8377;{{ row.grossVolume | number:'1.0-0' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3>Recent Approved Transactions</h3>
+      </div>
+      <div class="empty" *ngIf="report.recentApprovedTransactions.length === 0">
+        No approved transactions in selected range.
+      </div>
+      <div class="table-wrap" *ngIf="report.recentApprovedTransactions.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Approved</th>
+              <th>Product</th>
+              <th>Buyer</th>
+              <th>Seller</th>
+              <th>Total</th>
+              <th>Platform Fee</th>
+              <th>Seller Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tx of report.recentApprovedTransactions | slice:0:25">
+              <td>{{ tx.approvedAt | date:'medium' }}</td>
+              <td>{{ tx.productName }} ({{ tx.productType | uppercase }})</td>
+              <td>{{ tx.buyerName }}</td>
+              <td>{{ tx.sellerName }}</td>
+              <td>&#8377;{{ tx.totalAmount | number:'1.0-0' }}</td>
+              <td>&#8377;{{ tx.platformFee | number:'1.0-0' }}</td>
+              <td>&#8377;{{ tx.ownerAmount | number:'1.0-0' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </ng-container>
+</div>

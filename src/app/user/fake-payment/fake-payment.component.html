@@ -1,0 +1,59 @@
+<section class="page">
+  <div class="payment-shell">
+    <header class="header">
+      <button class="back-btn" type="button" (click)="goToOffers()">Back to My Offers</button>
+      <h2>Secure Payment</h2>
+      <p class="note">Simulation mode. No real money is charged.</p>
+    </header>
+
+    <div class="amount-card">
+      <span>Amount Due</span>
+      <strong>Rs. {{ amount | number:'1.0-0' }}</strong>
+    </div>
+
+    <div *ngIf="error && !success && !loading" class="state error">{{ error }}</div>
+
+    <div *ngIf="success" class="state success">
+      <h3>Payment Successful</h3>
+      <p>Rs. {{ amount | number:'1.0-0' }} processed. Redirecting to My Offers...</p>
+    </div>
+
+    <ng-container *ngIf="!success && !loading">
+      <div class="method-row">
+        <button type="button" class="method-btn" [class.active]="paymentMethod === 'card'" (click)="paymentMethod = 'card'">Card</button>
+        <button type="button" class="method-btn" [class.active]="paymentMethod === 'upi'" (click)="paymentMethod = 'upi'">UPI</button>
+      </div>
+
+      <div *ngIf="paymentMethod === 'card'" class="form">
+        <label>Card Number</label>
+        <input type="text" [(ngModel)]="card.number" placeholder="4242 4242 4242 4242" maxlength="19" />
+
+        <div class="grid">
+          <div>
+            <label>Expiry</label>
+            <input type="text" [(ngModel)]="card.expiry" placeholder="MM/YY" maxlength="5" />
+          </div>
+          <div>
+            <label>CVV</label>
+            <input type="password" [(ngModel)]="card.cvv" placeholder="123" maxlength="3" />
+          </div>
+        </div>
+
+        <label>Cardholder Name</label>
+        <input type="text" [(ngModel)]="card.name" placeholder="JOHN DOE" />
+      </div>
+
+      <div *ngIf="paymentMethod === 'upi'" class="form">
+        <label>UPI ID</label>
+        <input type="text" [(ngModel)]="upi.id" placeholder="yourname@okaxis" />
+      </div>
+
+      <button class="pay-btn" [disabled]="!canPay" (click)="submitPayment()">
+        Pay Rs. {{ amount | number:'1.0-0' }}
+      </button>
+      <p class="disclaimer">Demo transaction for project flow testing.</p>
+    </ng-container>
+
+    <div *ngIf="loading && !success" class="state">Processing payment, please wait...</div>
+  </div>
+</section>

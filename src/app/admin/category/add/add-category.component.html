@@ -1,0 +1,35 @@
+<div class="admin-page">
+  <div class="page-head">
+    <h2>Add New Category</h2>
+    <p>Create a category that sellers can use while posting products.</p>
+  </div>
+
+  <form class="form-card" (ngSubmit)="addCategory()">
+    <div class="form-group">
+      <label for="categoryName">Category Name</label>
+      <input
+        id="categoryName"
+        type="text"
+        placeholder="Electronics, Furniture, Sports"
+        [(ngModel)]="categoryName"
+        name="categoryName"
+        required
+        #nameInput="ngModel"
+        [class.input-error]="nameInput.invalid && nameInput.touched"
+      />
+      <p class="error-message" *ngIf="nameInput.invalid && nameInput.touched">
+        Please enter a category name
+      </p>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="!categoryName?.trim() || nameInput.invalid"
+      >
+        Add Category
+      </button>
+    </div>
+  </form>
+</div>

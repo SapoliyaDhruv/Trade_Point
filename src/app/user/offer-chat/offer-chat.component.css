@@ -1,0 +1,148 @@
+.page {
+  margin-left: var(--tp-user-sidebar-offset);
+  min-height: 100vh;
+  padding: var(--tp-page-padding);
+  background: var(--tp-bg);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.label {
+  margin: 0;
+  color: var(--tp-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+h2 {
+  margin: 0.2rem 0 0;
+  color: var(--tp-text);
+}
+
+.meta {
+  margin: 0.35rem 0 0;
+  color: var(--tp-muted);
+}
+
+.back {
+  text-decoration: none;
+  border: 1px solid var(--tp-border);
+  color: var(--tp-text);
+  background: var(--tp-surface);
+  border-radius: 10px;
+  padding: 0.55rem 0.8rem;
+  font-weight: 700;
+}
+
+.state {
+  border: 1px solid var(--tp-border);
+  border-radius: 12px;
+  background: var(--tp-surface);
+  color: var(--tp-muted);
+  padding: 1rem;
+}
+
+.state.error {
+  color: #dc2626;
+}
+
+.chat-box {
+  background: var(--tp-surface);
+  border: 1px solid var(--tp-border);
+  border-radius: 14px;
+  box-shadow: var(--tp-shadow-sm);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 68vh;
+}
+
+.messages {
+  padding: 1rem;
+  overflow-y: auto;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.empty {
+  color: var(--tp-muted);
+}
+
+.bubble {
+  max-width: min(80%, 520px);
+  padding: 0.65rem 0.8rem;
+  border-radius: 12px;
+  background: var(--tp-card);
+  border: 1px solid var(--tp-border);
+}
+
+.bubble.mine {
+  margin-left: auto;
+  background: color-mix(in srgb, var(--tp-accent) 15%, var(--tp-surface));
+  border-color: color-mix(in srgb, var(--tp-accent) 35%, var(--tp-border));
+}
+
+.bubble p {
+  margin: 0;
+  color: var(--tp-text);
+}
+
+.bubble small {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--tp-muted);
+  font-size: 0.72rem;
+}
+
+.composer {
+  border-top: 1px solid var(--tp-border);
+  padding: 0.8rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.composer input {
+  flex: 1;
+  border: 1px solid var(--tp-border);
+  background: var(--tp-bg);
+  color: var(--tp-text);
+  border-radius: 10px;
+  padding: 0.68rem 0.75rem;
+}
+
+.composer button {
+  border: 0;
+  border-radius: 10px;
+  padding: 0 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(140deg, var(--tp-accent), var(--tp-accent-2));
+  cursor: pointer;
+}
+
+.composer button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 980px) {
+  .page {
+    margin-left: 0;
+    padding: var(--tp-page-padding-mobile);
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .bubble {
+    max-width: 100%;
+  }
+}

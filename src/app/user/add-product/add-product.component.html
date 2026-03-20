@@ -1,0 +1,162 @@
+<section class="page">
+  <header class="header">
+    <p class="eyebrow">New Listing</p>
+    <h2>Add Product</h2>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="product-form">
+    <div class="grid two">
+      <div class="field">
+        <label>Product Name *</label>
+        <input formControlName="name" placeholder="e.g. iPhone 13" />
+        <small *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="error">
+          Product name is required (min 3 chars)
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Category *</label>
+        <select formControlName="category">
+          <option value="">Select category</option>
+          <option *ngFor="let c of categories" [value]="c._id">{{ c.name }}</option>
+        </select>
+        <small *ngIf="form.get('category')?.touched && form.get('category')?.hasError('required')" class="error">
+          Category is required
+        </small>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div class="field">
+        <label>Item Age (years) *</label>
+        <input type="number" formControlName="ageYears" min="0" />
+        <small *ngIf="form.get('ageYears')?.touched && form.get('ageYears')?.hasError('required')" class="error">
+          Item age is required
+        </small>
+        <small *ngIf="form.get('ageYears')?.touched && form.get('ageYears')?.hasError('min')" class="error">
+          Age must be 0 or more
+        </small>
+      </div>
+      <div class="field">
+        <label>Location *</label>
+        <input formControlName="location" placeholder="City, area, landmark" />
+        <small *ngIf="form.get('location')?.touched && form.get('location')?.hasError('required')" class="error">
+          Location is required
+        </small>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Listing Type *</label>
+      <div class="chips">
+        <label class="chip">
+          <input type="radio" formControlName="type" value="sale" />
+          <span>For Sale</span>
+        </label>
+        <label class="chip">
+          <input type="radio" formControlName="type" value="rent" />
+          <span>For Rent</span>
+        </label>
+      </div>
+      <small *ngIf="form.get('type')?.touched && form.get('type')?.hasError('required')" class="error">
+        Listing type is required
+      </small>
+    </div>
+
+    <ng-container *ngIf="form.get('type')?.value === 'sale'">
+      <div class="grid two">
+        <div class="field">
+          <label>Selling Price Min *</label>
+          <input type="number" formControlName="salePriceMin" min="1" />
+          <small *ngIf="form.get('salePriceMin')?.touched && form.get('salePriceMin')?.hasError('required')" class="error">
+            Minimum price is required
+          </small>
+          <small *ngIf="form.get('salePriceMin')?.touched && form.get('salePriceMin')?.hasError('min')" class="error">
+            Minimum price must be at least 1
+          </small>
+        </div>
+        <div class="field">
+          <label>Selling Price Max *</label>
+          <input type="number" formControlName="salePriceMax" min="1" />
+          <small *ngIf="form.errors?.['minGreaterThanMax']" class="error">Max price must be greater than min price</small>
+          <small *ngIf="form.get('salePriceMax')?.touched && form.get('salePriceMax')?.hasError('required')" class="error">
+            Maximum price is required
+          </small>
+          <small *ngIf="form.get('salePriceMax')?.touched && form.get('salePriceMax')?.hasError('min')" class="error">
+            Maximum price must be at least 1
+          </small>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="form.get('type')?.value === 'rent'">
+      <div class="grid three">
+        <div class="field">
+          <label>Rent Per Hour</label>
+          <input type="number" formControlName="rentPricePerHour" min="0" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Rent Per Day *</label>
+          <input type="number" formControlName="rentPricePerDay" min="1" />
+          <small *ngIf="form.get('rentPricePerDay')?.touched && form.get('rentPricePerDay')?.hasError('required')" class="error">
+            Rent per day is required
+          </small>
+          <small *ngIf="form.get('rentPricePerDay')?.touched && form.get('rentPricePerDay')?.hasError('min')" class="error">
+            Rent per day must be at least 1
+          </small>
+        </div>
+        <div class="field">
+          <label>Late Penalty / day *</label>
+          <input type="number" formControlName="latePenaltyPerDay" min="0" />
+          <small *ngIf="form.get('latePenaltyPerDay')?.touched && form.get('latePenaltyPerDay')?.hasError('required')" class="error">
+            Late penalty is required
+          </small>
+          <small *ngIf="form.get('latePenaltyPerDay')?.touched && form.get('latePenaltyPerDay')?.hasError('min')" class="error">
+            Late penalty cannot be negative
+          </small>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="field">
+      <label>Photos * (2 to 5)</label>
+      <small class="hint">JPG/PNG only, max 2MB each.</small>
+      <input type="file" multiple accept="image/*" (change)="onPhotosChange($event)" />
+      <div class="preview-grid">
+        <img *ngFor="let prev of photoPreviews" [src]="prev" alt="preview" />
+      </div>
+      <small *ngIf="form.get('photos')?.touched && form.get('photos')?.hasError('required')" class="error">2 to 5 photos required</small>
+      <small *ngIf="form.get('photos')?.touched && form.get('photos')?.hasError('photosCount')" class="error">Please select 2 to 5 photos</small>
+      <small *ngIf="form.get('photos')?.touched && form.get('photos')?.hasError('photosType')" class="error">Only image files are allowed</small>
+      <small *ngIf="form.get('photos')?.touched && form.get('photos')?.hasError('photosSize')" class="error">Each photo must be under 2MB</small>
+      <small *ngIf="photoError" class="error">{{ photoError }}</small>
+    </div>
+
+    <div class="field">
+      <label>Bill / Invoice Photos (max 2)</label>
+      <small class="hint">Optional. JPG/PNG only, max 2MB each.</small>
+      <input type="file" multiple accept="image/*" (change)="onBillPhotosChange($event)" />
+      <div class="preview-grid">
+        <img *ngFor="let prev of billPreviews" [src]="prev" alt="bill" />
+      </div>
+      <small *ngIf="form.get('billPhotos')?.touched && form.get('billPhotos')?.hasError('billCount')" class="error">Maximum 2 bill photos allowed</small>
+      <small *ngIf="form.get('billPhotos')?.touched && form.get('billPhotos')?.hasError('billType')" class="error">Only image files are allowed</small>
+      <small *ngIf="form.get('billPhotos')?.touched && form.get('billPhotos')?.hasError('billSize')" class="error">Each bill photo must be under 2MB</small>
+      <small *ngIf="billError" class="error">{{ billError }}</small>
+    </div>
+
+    <div class="field">
+      <label>Description *</label>
+      <textarea formControlName="description" rows="5" placeholder="Write full condition and usage details..."></textarea>
+      <small *ngIf="form.get('description')?.touched && form.get('description')?.hasError('required')" class="error">
+        Description is required
+      </small>
+      <small *ngIf="form.get('description')?.touched && form.get('description')?.hasError('minlength')" class="error">
+        Description must be at least 20 characters
+      </small>
+    </div>
+
+    <button type="submit" [disabled]="form.invalid" class="submit-btn">Submit for Review</button>
+    <div *ngIf="errorMsg" class="error block">{{ errorMsg }}</div>
+  </form>
+</section>

@@ -1,0 +1,35 @@
+<section class="page">
+  <header class="header">
+    <div>
+      <p class="label">Offer Chat</p>
+      <h2>{{ productName }}</h2>
+      <p class="meta" *ngIf="status">Status: {{ status }}</p>
+    </div>
+    <a class="back" routerLink="/user/my-offers">Back to My Offers</a>
+  </header>
+
+  <div *ngIf="loading" class="state">Loading messages...</div>
+  <div *ngIf="error && !loading" class="state error">{{ error }}</div>
+
+  <div class="chat-box" *ngIf="!loading">
+    <div class="messages">
+      <div class="empty" *ngIf="messages.length === 0">No messages yet. Start the conversation.</div>
+      <article class="bubble" *ngFor="let msg of messages" [class.mine]="isMine(msg)">
+        <p>{{ msg.message }}</p>
+        <small>{{ msg.timestamp | date:'short' }}</small>
+      </article>
+    </div>
+
+    <div class="composer">
+      <input
+        type="text"
+        [(ngModel)]="messageText"
+        placeholder="Type your message..."
+        (keyup.enter)="sendMessage()"
+      />
+      <button (click)="sendMessage()" [disabled]="sending || !messageText.trim()">
+        {{ sending ? 'Sending...' : 'Send' }}
+      </button>
+    </div>
+  </div>
+</section>

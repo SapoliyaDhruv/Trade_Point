@@ -1,0 +1,98 @@
+<section class="page-wrapper">
+  <div class="loading" *ngIf="isLoading">Loading product...</div>
+
+  <div class="card" *ngIf="!isLoading">
+    <header class="head">
+      <div>
+        <p class="eyebrow">Manage Listing</p>
+        <h2>Edit Product</h2>
+      </div>
+      <button type="button" class="btn ghost" (click)="cancel()">Back</button>
+    </header>
+
+    <form [formGroup]="editForm" (ngSubmit)="save()" class="form">
+      <section class="group">
+        <h3>Basic Details</h3>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" formControlName="name" />
+          </div>
+
+          <div class="form-group">
+            <label>Category</label>
+            <select formControlName="category">
+              <option value="">Select Category</option>
+              <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Type</label>
+            <select formControlName="type">
+              <option value="sale">Sell</option>
+              <option value="rent">Rent</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Age (Years)</label>
+            <input type="number" formControlName="ageYears" min="0" />
+          </div>
+
+          <div class="form-group full">
+            <label>Location</label>
+            <input type="text" formControlName="location" />
+          </div>
+
+          <div class="form-group full">
+            <label>Description</label>
+            <textarea rows="4" formControlName="description"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="group" *ngIf="editForm.value.type === 'sale'">
+        <h3>Sale Pricing</h3>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label>Min Price</label>
+            <input type="number" formControlName="salePriceMin" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Max Price</label>
+            <input type="number" formControlName="salePriceMax" min="1" />
+          </div>
+        </div>
+      </section>
+
+      <section class="group" *ngIf="editForm.value.type === 'rent'">
+        <h3>Rent Pricing</h3>
+        <div class="grid grid-3">
+          <div class="form-group">
+            <label>Rent / Hour</label>
+            <input type="number" formControlName="rentPricePerHour" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Rent / Day</label>
+            <input type="number" formControlName="rentPricePerDay" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Late Penalty / Day</label>
+            <input type="number" formControlName="latePenaltyPerDay" min="0" />
+          </div>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button type="submit" class="btn primary" [disabled]="isSaving || editForm.invalid">
+          {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        </button>
+        <button type="button" class="btn secondary" (click)="cancel()">Cancel</button>
+      </div>
+
+      <p class="message error" *ngIf="errorMsg">{{ errorMsg }}</p>
+      <p class="message success" *ngIf="successMsg">{{ successMsg }}</p>
+    </form>
+  </div>
+</section>

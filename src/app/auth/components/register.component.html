@@ -1,0 +1,46 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Register</h2>
+
+    <form (ngSubmit)="register()">
+      <input
+        type="text"
+        placeholder="First Name"
+        [(ngModel)]="firstName"
+        name="firstName"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="Last Name"
+        [(ngModel)]="lastName"
+        name="lastName"
+        required
+      />
+
+      <input
+        type="email"
+        placeholder="Email"
+        [(ngModel)]="email"
+        name="email"
+        required
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        [(ngModel)]="password"
+        name="password"
+        required
+      />
+
+      <button type="submit">Send OTP</button>
+    </form>
+
+    <p class="link-text">
+      Already have an account?
+      <a routerLink="/login">Login</a>
+    </p>
+  </div>
+</div>

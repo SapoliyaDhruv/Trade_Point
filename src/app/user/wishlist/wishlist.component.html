@@ -1,0 +1,28 @@
+<section class="page">
+  <header class="header">
+    <h2>Wishlist</h2>
+    <button class="refresh" (click)="loadWishlist()" [disabled]="loading">{{ loading ? 'Loading...' : 'Refresh' }}</button>
+  </header>
+
+  <div *ngIf="loading" class="state">Loading wishlist...</div>
+  <div *ngIf="error && !loading" class="state error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && items.length === 0" class="state">
+    No items in wishlist yet.
+  </div>
+
+  <div class="grid" *ngIf="!loading && items.length > 0">
+    <article class="card" *ngFor="let item of items">
+      <img [src]="getImage(item.photos?.[0])" [alt]="item.name" />
+      <div class="content">
+        <h3>{{ item.name }}</h3>
+        <p class="price">{{ getPriceLabel(item) }}</p>
+        <p class="meta">{{ item.location }}</p>
+        <div class="actions">
+          <a class="btn primary" [routerLink]="['/user/product', item._id]">View</a>
+          <button class="btn danger" (click)="remove(item._id)">Remove</button>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

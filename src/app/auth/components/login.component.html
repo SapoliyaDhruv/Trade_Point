@@ -1,0 +1,54 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <h2 *ngIf="!forgotMode">Welcome Back</h2>
+    <h2 *ngIf="forgotMode">Reset Password</h2>
+
+    <p class="subtitle" *ngIf="!forgotMode">Login to continue to Trade Point.</p>
+    <p class="subtitle" *ngIf="forgotMode">Use OTP from email to create a new password.</p>
+
+    <form *ngIf="!forgotMode" (ngSubmit)="login()">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="email" name="email" placeholder="you@example.com" required />
+
+      <label>Password</label>
+      <input type="password" [(ngModel)]="password" name="password" placeholder="Enter password" required />
+
+      <button type="submit" [disabled]="loading">{{ loading ? 'Please wait...' : 'Login' }}</button>
+    </form>
+
+    <div *ngIf="forgotMode" class="forgot-grid">
+      <label>Email</label>
+      <div class="row">
+        <input type="email" [(ngModel)]="resetEmail" name="resetEmail" placeholder="you@example.com" />
+        <button type="button" class="secondary" (click)="sendResetOtp()" [disabled]="loading">
+          {{ loading ? 'Sending...' : 'Send OTP' }}
+        </button>
+      </div>
+
+      <label>OTP</label>
+      <input type="text" [(ngModel)]="resetOtp" name="resetOtp" placeholder="6-digit OTP" />
+
+      <label>New Password</label>
+      <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="At least 6 characters" />
+
+      <label>Confirm Password</label>
+      <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="Re-enter new password" />
+
+      <button type="button" (click)="resetPasswordNow()" [disabled]="loading">
+        {{ loading ? 'Updating...' : 'Reset Password' }}
+      </button>
+    </div>
+
+    <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
+    <p *ngIf="infoMsg" class="info">{{ infoMsg }}</p>
+
+    <div class="links" *ngIf="!forgotMode">
+      <button type="button" class="link-btn" (click)="openForgotPassword()">Forgot password?</button>
+      <p>New user? <a routerLink="/register">Register</a></p>
+    </div>
+
+    <div class="links" *ngIf="forgotMode">
+      <button type="button" class="link-btn" (click)="backToLogin()">Back to Login</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<section class="page">
+  <header class="header">
+    <h2>My Offers</h2>
+    <button class="refresh" (click)="loadMySentOffers()" [disabled]="loading">{{ loading ? 'Loading...' : 'Refresh' }}</button>
+  </header>
+
+  <div *ngIf="loading" class="state">Loading your offers...</div>
+  <div *ngIf="error && !loading" class="state error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && offers.length === 0" class="state">
+    No offers yet. Browse products and start negotiating.
+  </div>
+
+  <div class="grid" *ngIf="!loading && offers.length > 0">
+    <article class="offer-card" *ngFor="let offer of offers">
+      <div class="row">
+        <div>
+          <h3>{{ offer.productId?.name || 'Product' }}</h3>
+          <p class="meta">{{ offer.offerType === 'RENT' ? 'For Rent' : 'For Sale' }}</p>
+        </div>
+        <span
+          class="status"
+          [ngClass]="{
+            'pending': offer.status === 'PENDING',
+            'countered': offer.status === 'COUNTERED',
+            'accepted': offer.status === 'ACCEPTED' || offer.status === 'APPROVED',
+            'paid-awaiting': offer.paymentStatus === 'PAID_AWAITING_ADMIN',
+            'approved': offer.paymentStatus === 'APPROVED',
+            'rejected': offer.status === 'REJECTED' || offer.paymentStatus === 'REJECTED_BY_ADMIN'
+          }"
+        >
+          {{ (offer.paymentStatus || offer.status) | titlecase }}
+        </span>
+      </div>
+
+      <p class="amount">Rs. {{ (offer.totalAmount || offer.offerAmount || 0) | number:'1.0-0' }}</p>
+
+      <p class="meta" *ngIf="offer.status === 'COUNTERED'">
+        Counter: Rs. {{ offer.counterAmount | number:'1.0-0' }}
+      </p>
+      <p class="meta" *ngIf="offer.counterMessage">"{{ offer.counterMessage }}"</p>
+
+      <div class="actions">
+        <button class="btn secondary" (click)="openChat(offer._id)">Chat</button>
+
+        <ng-container *ngIf="offer.status === 'COUNTERED'">
+          <button class="btn success" (click)="acceptCounter(offer._id)">Accept Counter</button>
+          <button class="btn danger" (click)="rejectCounter(offer._id)">Reject</button>
+        </ng-container>
+
+        <ng-container *ngIf="offer.paymentStatus === 'AWAITING_PAYMENT' && offer.transactionId">
+          <button class="btn primary" (click)="goToPayment(offer.transactionId, offer.totalAmount || offer.offerAmount)">
+            Pay Now
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="offer.status !== 'COUNTERED' && offer.paymentStatus !== 'AWAITING_PAYMENT'">
+          <span class="meta">{{ (offer.paymentStatus || offer.status) | titlecase }}</span>
+        </ng-container>
+      </div>
+    </article>
+  </div>
+</section>

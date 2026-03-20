@@ -1,0 +1,138 @@
+.admin-page {
+  margin-left: var(--tp-admin-sidebar-offset);
+  min-height: 100vh;
+  padding: var(--ad-page-padding);
+  background: var(--ad-bg);
+  color: var(--ad-text);
+}
+
+.page-head {
+  margin-bottom: 14px;
+}
+
+.page-head h2 {
+  margin: 0;
+  font-size: 1.55rem;
+}
+
+.page-head p {
+  margin: 6px 0 0;
+  color: var(--ad-muted);
+}
+
+.alert {
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--ad-border);
+}
+
+.alert.error {
+  background: color-mix(in srgb, #ef4444 12%, var(--ad-card));
+  color: #ef4444;
+}
+
+.empty {
+  border: 1px dashed var(--ad-border);
+  background: var(--ad-card);
+  border-radius: 14px;
+  padding: 24px;
+  color: var(--ad-muted);
+}
+
+.card {
+  background: var(--ad-card);
+  border: 1px solid var(--ad-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ad-border);
+  white-space: nowrap;
+}
+
+th {
+  color: var(--ad-muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.money {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.fee {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  border: 1px solid var(--ad-border);
+  border-radius: 10px;
+  padding: 7px 11px;
+  color: var(--ad-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn.approve {
+  background: color-mix(in srgb, #22c55e 20%, var(--ad-card));
+}
+
+.btn.reject {
+  background: color-mix(in srgb, #ef4444 16%, var(--ad-card));
+}
+
+@media (max-width: 992px) {
+  .admin-page {
+    margin-left: 0;
+    padding: var(--ad-page-padding-mobile);
+  }
+
+  table thead {
+    display: none;
+  }
+
+  table tr {
+    display: block;
+    border-bottom: 1px solid var(--ad-border);
+    padding: 8px 0;
+  }
+
+  table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    white-space: normal;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    color: var(--ad-muted);
+    font-weight: 700;
+  }
+
+  .actions {
+    justify-content: flex-end;
+  }
+}

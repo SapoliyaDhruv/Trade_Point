@@ -1,0 +1,123 @@
+<div class="dashboard-content">
+  <header class="header">
+    <div>
+      <p class="eyebrow">User Dashboard</p>
+      <h1>Welcome Back</h1>
+    </div>
+    <a routerLink="/user/browse-products" class="cta">Browse Products</a>
+  </header>
+
+  <div *ngIf="loading" class="status-card">Loading dashboard stats...</div>
+  <div *ngIf="error && !loading" class="status-card error">{{ error }}</div>
+
+  <section class="stats-grid" *ngIf="!loading && !error">
+    <article class="stat-card">
+      <p>Total Buyers</p>
+      <h3>{{ stats.totalBuyers }}</h3>
+    </article>
+    <article class="stat-card">
+      <p>Currently Rented</p>
+      <h3>{{ stats.currentRentedItems }}</h3>
+    </article>
+    <article class="stat-card">
+      <p>Total Sales</p>
+      <h3>{{ stats.totalSales }}</h3>
+    </article>
+    <article class="stat-card">
+      <p>Total Rent Deals</p>
+      <h3>{{ stats.totalRentDeals }}</h3>
+    </article>
+    <article class="stat-card">
+      <p>Available Balance</p>
+      <h3>Rs. {{ stats.availableBalance | number:'1.0-0' }}</h3>
+    </article>
+    <article class="stat-card">
+      <p>Total Earned</p>
+      <h3>Rs. {{ stats.grossRevenue | number:'1.0-0' }}</h3>
+    </article>
+    <article class="stat-card">
+      <p>Total Withdrawn</p>
+      <h3>Rs. {{ stats.totalWithdrawn | number:'1.0-0' }}</h3>
+    </article>
+    <article class="stat-card">
+      <p>Listings (Approved)</p>
+      <h3>{{ stats.approvedListings }} / {{ stats.totalListings }}</h3>
+    </article>
+  </section>
+
+  <section class="wallet-panel" *ngIf="!loading && !error">
+    <div class="wallet-head">
+      <div>
+        <h3>Withdraw Earnings</h3>
+        <p *ngIf="payout.payoutReady && payout.payoutMethod === 'bank'">
+          Destination: {{ payout.bankName }} ({{ payout.maskedAccountNumber }})
+        </p>
+        <p *ngIf="payout.payoutReady && payout.payoutMethod === 'upi'">
+          Destination: {{ payout.upiId }}
+        </p>
+        <p *ngIf="!payout.payoutReady">
+          Payout details are not configured. Set them in Profile first.
+        </p>
+      </div>
+      <button class="withdraw-btn" [disabled]="isWithdrawing || stats.availableBalance <= 0 || !payout.payoutReady" (click)="withdrawEarnings()">
+        {{ isWithdrawing ? 'Processing...' : 'Withdraw Now' }}
+      </button>
+    </div>
+
+    <div class="withdrawals">
+      <p class="title">Recent Withdrawals</p>
+      <p class="empty" *ngIf="withdrawals.length === 0">No withdrawals yet.</p>
+      <div class="item" *ngFor="let item of withdrawals">
+        <span>Rs. {{ item.amount | number:'1.0-0' }}</span>
+        <small>{{ item.createdAt | date:'medium' }} | {{ item.reference }}</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="analytics" *ngIf="!loading && !error">
+    <article class="analytics-card">
+      <header>
+        <h3>6-Month Revenue Trend</h3>
+        <span>Conversion: {{ analytics.conversionRate }}%</span>
+      </header>
+
+      <div class="row" *ngFor="let month of analytics.monthly">
+        <div class="meta">
+          <strong>{{ month.label }}</strong>
+          <small>Rs. {{ month.revenue | number:'1.0-0' }}</small>
+        </div>
+        <div class="bar"><i [style.width.%]="getRevenueBarWidth(month.revenue)"></i></div>
+      </div>
+    </article>
+
+    <article class="analytics-card">
+      <header>
+        <h3>Deal Activity</h3>
+        <span>Active Listings: {{ analytics.activeListings }}</span>
+      </header>
+
+      <div class="row" *ngFor="let month of analytics.monthly">
+        <div class="meta">
+          <strong>{{ month.label }}</strong>
+          <small>{{ month.sales }} sales, {{ month.rentals }} rentals</small>
+        </div>
+        <div class="bar deals"><i [style.width.%]="getDealsBarWidth(month.sales, month.rentals)"></i></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="quick-grid">
+    <a class="quick-card" routerLink="/user/add-product">
+      <h3>Add Product</h3>
+      <p>Post a new item for sale or rent.</p>
+    </a>
+    <a class="quick-card" routerLink="/user/my-offers">
+      <h3>My Offers</h3>
+      <p>Track offer status and payments.</p>
+    </a>
+    <a class="quick-card" routerLink="/user/rentals">
+      <h3>My Rentals</h3>
+      <p>Manage return requests and penalties.</p>
+    </a>
+  </section>
+</div>

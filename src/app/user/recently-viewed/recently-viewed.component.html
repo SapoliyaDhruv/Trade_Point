@@ -1,0 +1,25 @@
+<section class="page">
+  <header class="header">
+    <h2>Recently Viewed</h2>
+    <button class="refresh" (click)="loadItems()" [disabled]="loading">{{ loading ? 'Loading...' : 'Refresh' }}</button>
+  </header>
+
+  <div *ngIf="loading" class="state">Loading recently viewed...</div>
+  <div *ngIf="error && !loading" class="state error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && items.length === 0" class="state">
+    No recently viewed products yet.
+  </div>
+
+  <div class="grid" *ngIf="!loading && items.length > 0">
+    <article class="card" *ngFor="let item of items">
+      <img [src]="getImage(item.photos?.[0])" [alt]="item.name" />
+      <div class="content">
+        <h3>{{ item.name }}</h3>
+        <p class="price">{{ getPriceLabel(item) }}</p>
+        <p class="meta">{{ item.location }}</p>
+        <a class="btn primary" [routerLink]="['/user/product', item._id]">Open</a>
+      </div>
+    </article>
+  </div>
+</section>

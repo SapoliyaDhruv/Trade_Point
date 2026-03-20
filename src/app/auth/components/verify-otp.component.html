@@ -1,0 +1,22 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Verify OTP</h2>
+
+    <form (ngSubmit)="verifyOtp()">
+      <input
+        type="text"
+        placeholder="Enter OTP"
+        [(ngModel)]="otp"
+        name="otp"
+        required
+      />
+
+      <button type="submit">Verify OTP</button>
+    </form>
+
+    <p class="link-text">
+      Already have an account?
+      <a routerLink="/login">Login</a>
+    </p>
+  </div>
+</div>

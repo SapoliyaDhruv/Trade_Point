@@ -12,6 +12,10 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+## Environment variables
+
+Copy `.env.example` to `.env` and fill in your values for local development. These values are used by the Node API server (`src/server/server.js`) and related config files.
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:

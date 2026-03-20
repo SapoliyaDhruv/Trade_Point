@@ -1,0 +1,161 @@
+<aside class="user-sidebar">
+  <button
+    class="sidebar-handle"
+    type="button"
+    (click)="toggleSidebar()"
+    [attr.aria-label]="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+    [attr.title]="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12h18"></path>
+      <path d="M10 6l-6 6 6 6"></path>
+    </svg>
+  </button>
+  <div class="sidebar-glow"></div>
+
+  <header class="sidebar-header">
+    <div class="header-row">
+      <a class="brand" routerLink="/user/dashboard">
+        <img src="trade-point-logo.png" alt="Trade Point" />
+        <div>
+          <h3>Trade Point</h3>
+          <small>User Space</small>
+        </div>
+      </a>
+      <button
+        class="sidebar-toggle"
+        type="button"
+        (click)="toggleSidebar()"
+        [attr.aria-label]="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12h18"></path>
+          <path d="M10 6l-6 6 6 6"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="profile-card">
+      <img [src]="profileImageUrl" alt="Profile" class="avatar" />
+      <div class="meta">
+        <strong>{{ userName }}</strong>
+        <span>Member</span>
+      </div>
+      <a class="profile-shortcut" routerLink="/user/profile" aria-label="Go to profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <nav class="menu">
+    <p class="menu-title">Marketplace</p>
+    <a routerLink="/user/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+        <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+        <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+        <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+      </svg>
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/user/browse-products" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <span>Browse Products</span>
+    </a>
+    <a routerLink="/user/listings" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="8" y1="6" x2="21" y2="6"></line>
+        <line x1="8" y1="12" x2="21" y2="12"></line>
+        <line x1="8" y1="18" x2="21" y2="18"></line>
+        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+      </svg>
+      <span>My Listings</span>
+    </a>
+    <a routerLink="/user/add-product" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="16"></line>
+        <line x1="8" y1="12" x2="16" y2="12"></line>
+      </svg>
+      <span>Add Product</span>
+    </a>
+
+    <p class="menu-title">Deals</p>
+    <a routerLink="/user/offers" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 7h-9"></path>
+        <path d="M14 17H5"></path>
+        <circle cx="17" cy="17" r="3"></circle>
+        <circle cx="7" cy="7" r="3"></circle>
+      </svg>
+      <span>Offers Received</span>
+    </a>
+    <a routerLink="/user/my-offers" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span>My Offers</span>
+    </a>
+    <a routerLink="/user/rentals" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 7h18"></path>
+        <path d="M3 12h18"></path>
+        <path d="M3 17h18"></path>
+      </svg>
+      <span>My Rentals</span>
+    </a>
+
+    <p class="menu-title">Account</p>
+    <a routerLink="/user/wallet" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+        <circle cx="16" cy="12" r="2"></circle>
+      </svg>
+      <span>Wallet Ledger</span>
+    </a>
+    <a routerLink="/user/wishlist" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      <span>Wishlist</span>
+    </a>
+    <a routerLink="/user/recently-viewed" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="1 4 1 10 7 10"></polyline>
+        <path d="M3.51 15a9 9 0 1 0 .49-9"></path>
+      </svg>
+      <span>Recently Viewed</span>
+    </a>
+    <a routerLink="/user/notifications" routerLinkActive="active" class="notif-link">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+      </svg>
+      <span>Notifications</span>
+      <span *ngIf="unreadNotifications > 0" class="notif-badge">{{ unreadNotifications > 99 ? '99+' : unreadNotifications }}</span>
+    </a>
+    <a routerLink="/user/profile" routerLinkActive="active">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <button class="logout-btn" (click)="logout()">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+      <polyline points="16 17 21 12 16 7"></polyline>
+      <line x1="21" y1="12" x2="9" y2="12"></line>
+    </svg>
+    <span>Logout</span>
+  </button>
+</aside>

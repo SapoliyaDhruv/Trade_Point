@@ -1,0 +1,77 @@
+<div class="admin-page">
+  <div class="page-head">
+    <h2>Manage Products</h2>
+    <p>Search, filter, edit, and remove approved product listings.</p>
+  </div>
+
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="Search products..."
+      [(ngModel)]="searchTerm"
+      (input)="applyFilters()"
+      class="search-input"
+    />
+
+    <select
+      [(ngModel)]="selectedCategory"
+      (change)="applyFilters()"
+      class="category-select"
+    >
+      <option value="">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
+    </select>
+  </div>
+
+  <div class="card" *ngIf="!isLoading; else loading">
+    <div class="table-wrap" *ngIf="displayedProducts.length > 0; else noData">
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Seller</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of displayedProducts">
+            <td><img [src]="getImage(product)" alt="{{ product.name }}" class="thumb" /></td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.seller?.firstName }} {{ product.seller?.lastName || '' }}</td>
+            <td>{{ getPrice(product) }}</td>
+            <td>{{ product.category?.name || 'Unknown' }}</td>
+            <td><span class="status approved">{{ product.status | titlecase }}</span></td>
+            <td class="action-cell">
+              <div class="actions">
+                <button class="btn edit" (click)="editProduct(product)">Edit</button>
+                <button class="btn delete" (click)="deleteProduct(product)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+  </div>
+
+  <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
+</div>
+
+<ng-template #loading>
+  <div class="empty">Loading products...</div>
+</ng-template>
+
+<ng-template #noData>
+  <div class="empty">
+    No approved products found{{ (searchTerm || selectedCategory) ? ' matching your filters' : '' }}.
+  </div>
+</ng-template>

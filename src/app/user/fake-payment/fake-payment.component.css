@@ -1,0 +1,176 @@
+.page {
+  margin-left: var(--tp-user-sidebar-offset);
+  min-height: 100vh;
+  padding: var(--tp-page-padding);
+  background: var(--tp-bg);
+}
+
+.payment-shell {
+  max-width: 560px;
+  margin: 0 auto;
+  border: 1px solid var(--tp-border);
+  border-radius: 16px;
+  background: var(--tp-surface);
+  box-shadow: var(--tp-shadow-md);
+  padding: 1.1rem;
+}
+
+.header h2 {
+  margin: 0.6rem 0 0;
+  color: var(--tp-text);
+}
+
+.note {
+  margin: 0.5rem 0 0;
+  color: var(--tp-muted);
+  font-size: 0.86rem;
+}
+
+.back-btn {
+  border: 1px solid var(--tp-border);
+  background: var(--tp-card);
+  color: var(--tp-text);
+  border-radius: 10px;
+  height: 36px;
+  padding: 0 0.75rem;
+  cursor: pointer;
+}
+
+.amount-card {
+  margin-top: 1rem;
+  border: 1px solid var(--tp-border);
+  background: var(--tp-card);
+  border-radius: 12px;
+  padding: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.amount-card span {
+  color: var(--tp-muted);
+}
+
+.amount-card strong {
+  color: var(--tp-success);
+  font-size: 1.5rem;
+}
+
+.method-row {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.method-btn {
+  border: 1px solid var(--tp-border);
+  border-radius: 10px;
+  background: var(--tp-card);
+  color: var(--tp-text);
+  height: 38px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.method-btn.active {
+  border-color: color-mix(in srgb, var(--tp-accent) 34%, var(--tp-border));
+  background: color-mix(in srgb, var(--tp-accent) 12%, var(--tp-card));
+}
+
+.form {
+  margin-top: 1rem;
+}
+
+label {
+  display: block;
+  margin: 0.55rem 0 0.28rem;
+  color: var(--tp-text);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--tp-border);
+  border-radius: 10px;
+  background: var(--tp-card);
+  color: var(--tp-text);
+  padding: 0 0.72rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--tp-accent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.pay-btn {
+  margin-top: 1rem;
+  width: 100%;
+  height: 42px;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(140deg, var(--tp-accent), var(--tp-accent-2));
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pay-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.disclaimer {
+  margin: 0.6rem 0 0;
+  color: var(--tp-muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.state {
+  margin-top: 1rem;
+  border: 1px solid var(--tp-border);
+  border-radius: 12px;
+  background: var(--tp-card);
+  color: var(--tp-muted);
+  padding: 0.85rem;
+}
+
+.state.error {
+  color: #dc2626;
+}
+
+.state.success {
+  color: #047857;
+}
+
+.state.success h3 {
+  margin: 0;
+  color: #047857;
+}
+
+.state.success p {
+  margin: 0.4rem 0 0;
+}
+
+@media (max-width: 980px) {
+  .page {
+    margin-left: 0;
+    padding: var(--tp-page-padding-mobile);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

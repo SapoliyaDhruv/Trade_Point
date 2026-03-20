@@ -1,0 +1,388 @@
+:host {
+  --sidebar-width: var(--tp-user-sidebar-offset, 260px);
+}
+
+.user-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  border-right: 1px solid var(--tp-border);
+  background:
+    radial-gradient(120px 120px at 15% -5%, color-mix(in srgb, var(--tp-accent) 18%, transparent), transparent 70%),
+    radial-gradient(180px 180px at 95% 0%, color-mix(in srgb, var(--tp-accent-2) 16%, transparent), transparent 72%),
+    var(--tp-surface);
+  padding: 1rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  z-index: 1000;
+  box-shadow: 10px 0 28px color-mix(in srgb, var(--tp-shadow-md) 35%, transparent);
+  overflow: hidden;
+}
+
+.sidebar-handle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--tp-border) 60%, transparent);
+  background: color-mix(in srgb, var(--tp-card) 70%, transparent);
+  color: var(--tp-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-handle svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sidebar-handle:hover {
+  color: var(--tp-text);
+  border-color: color-mix(in srgb, var(--tp-accent) 30%, var(--tp-border));
+}
+
+.sidebar-glow {
+  pointer-events: none;
+  position: absolute;
+  top: -80px;
+  left: -50px;
+  width: 180px;
+  height: 180px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tp-accent) 20%, transparent);
+  filter: blur(28px);
+  opacity: 0.55;
+}
+
+.sidebar-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.brand {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.55rem;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--tp-border) 60%, transparent);
+  background: color-mix(in srgb, var(--tp-card) 75%, transparent);
+}
+
+.brand img {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+}
+
+.brand h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--tp-text);
+}
+
+.brand small {
+  color: var(--tp-muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+}
+
+.sidebar-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--tp-border) 60%, transparent);
+  background: color-mix(in srgb, var(--tp-card) 70%, transparent);
+  color: var(--tp-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sidebar-toggle:hover {
+  color: var(--tp-text);
+  border-color: color-mix(in srgb, var(--tp-accent) 30%, var(--tp-border));
+  transform: translateY(-1px);
+}
+
+.profile-card {
+  border: 1px solid var(--tp-border);
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--tp-card) 85%, transparent),
+    color-mix(in srgb, var(--tp-accent) 8%, var(--tp-card))
+  );
+  border-radius: 12px;
+  padding: 0.7rem 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid color-mix(in srgb, var(--tp-accent) 35%, transparent);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta strong {
+  color: var(--tp-text);
+  font-size: 0.9rem;
+}
+
+.meta span {
+  color: var(--tp-muted);
+  font-size: 0.8rem;
+}
+
+.profile-shortcut {
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--tp-border);
+  color: var(--tp-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: color-mix(in srgb, var(--tp-surface) 90%, transparent);
+}
+
+.profile-shortcut:hover {
+  color: var(--tp-text);
+  border-color: color-mix(in srgb, var(--tp-accent) 30%, var(--tp-border));
+}
+
+.profile-shortcut svg {
+  width: 14px;
+  height: 14px;
+}
+
+.menu {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+.menu-title {
+  margin: 0.55rem 0 0.12rem;
+  color: var(--tp-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.menu a {
+  text-decoration: none;
+  color: var(--tp-muted);
+  border-radius: 10px;
+  padding: 0.62rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--tp-border) 45%, transparent);
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.58rem;
+  background: color-mix(in srgb, var(--tp-surface) 82%, transparent);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.menu a:hover {
+  transform: translateX(2px);
+  border-color: color-mix(in srgb, var(--tp-accent) 28%, var(--tp-border));
+  color: var(--tp-text);
+  background: color-mix(in srgb, var(--tp-card) 88%, transparent);
+}
+
+.menu a.active {
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--tp-accent) 18%, var(--tp-card)),
+    color-mix(in srgb, var(--tp-accent-2) 18%, var(--tp-card))
+  );
+  border-color: color-mix(in srgb, var(--tp-accent) 40%, var(--tp-border));
+  color: var(--tp-text);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--tp-accent) 18%, transparent);
+}
+
+.menu-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
+.notif-link {
+  position: relative;
+}
+
+.notif-badge {
+  margin-left: auto;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.69rem;
+  font-weight: 800;
+  background: #dc2626;
+  color: #fff;
+  padding: 0 0.38rem;
+}
+
+.logout-btn {
+  margin-top: 0.25rem;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, #dc2626 35%, transparent);
+  background: color-mix(in srgb, #dc2626 10%, var(--tp-surface));
+  color: #dc2626;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.logout-btn:hover {
+  background: color-mix(in srgb, #dc2626 16%, var(--tp-surface));
+}
+
+:host-context(.user-sidebar-collapsed) .user-sidebar {
+  width: var(--tp-user-sidebar-collapsed);
+  padding: 1rem 0.5rem;
+}
+
+:host-context(.user-sidebar-collapsed) .brand div,
+:host-context(.user-sidebar-collapsed) .profile-card .meta,
+:host-context(.user-sidebar-collapsed) .menu-title,
+:host-context(.user-sidebar-collapsed) .menu a span,
+:host-context(.user-sidebar-collapsed) .logout-btn span {
+  display: none;
+}
+
+:host-context(.user-sidebar-collapsed) .brand {
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+:host-context(.user-sidebar-collapsed) .profile-card {
+  justify-content: center;
+}
+
+:host-context(.user-sidebar-collapsed) .profile-shortcut {
+  display: none;
+}
+
+:host-context(.user-sidebar-collapsed) .menu a {
+  justify-content: center;
+  padding: 0.6rem;
+}
+
+:host-context(.user-sidebar-collapsed) .logout-btn {
+  justify-content: center;
+}
+
+:host-context(.user-sidebar-collapsed) .sidebar-toggle {
+  transform: rotate(180deg);
+}
+
+:host-context(.user-sidebar-collapsed) .sidebar-handle {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+@media (max-width: 900px) {
+  .user-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(280px, 88vw);
+    height: 100vh;
+    border-right: 1px solid var(--tp-border);
+    border-bottom: 0;
+    box-shadow: 10px 0 28px color-mix(in srgb, var(--tp-shadow-md) 35%, transparent);
+    transform: translateX(-110%);
+    transition: transform 0.25s ease;
+  }
+
+  .menu {
+    max-height: none;
+    overflow: auto;
+  }
+
+  .menu-title {
+    margin-top: 0.35rem;
+  }
+
+  .sidebar-handle {
+    display: none;
+  }
+
+  :host-context(.user-sidebar-collapsed) .user-sidebar {
+    width: min(280px, 88vw);
+    padding: 1rem 0.85rem;
+  }
+
+  :host-context(.user-sidebar-collapsed) .brand div,
+  :host-context(.user-sidebar-collapsed) .profile-card .meta,
+  :host-context(.user-sidebar-collapsed) .menu-title,
+  :host-context(.user-sidebar-collapsed) .menu a span,
+  :host-context(.user-sidebar-collapsed) .logout-btn span {
+    display: inline;
+  }
+
+  :host-context(.user-sidebar-collapsed) .profile-shortcut {
+    display: inline-flex;
+  }
+
+  :host-context(.user-sidebar-collapsed) .menu a {
+    justify-content: flex-start;
+    padding: 0.62rem 0.7rem;
+  }
+
+  :host-context(.user-sidebar-open) .user-sidebar {
+    transform: translateX(0);
+  }
+}

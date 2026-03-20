@@ -1,0 +1,87 @@
+<div class="offer-modal-container mat-elevation-z8">
+  <h2 mat-dialog-title>
+    Make an Offer - {{ data.product.name }}
+    <span class="type-label" [ngClass]="{'sale': data.product.type === 'sale', 'rent': data.product.type === 'rent'}">
+      {{ data.product.type === 'sale' ? '(For Sale)' : '(For Rent)' }}
+    </span>
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="offer-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>
+          {{ isRent ? 'Rent Price per Day (Fixed)' : 'Offer Price (Rs.)' }}
+        </mat-label>
+        <input
+          matInput
+          formControlName="offerAmount"
+          type="number"
+          required
+          [readonly]="isRent"
+          [min]="isRent ? fixedRentPrice : saleMinPrice"
+        >
+        <mat-error *ngIf="offerForm.get('offerAmount')?.hasError('required')">
+          Price is required
+        </mat-error>
+        <mat-error *ngIf="offerForm.get('offerAmount')?.hasError('min')">
+          Offer cannot be less than minimum price (Rs. {{ saleMinPrice }})
+        </mat-error>
+      </mat-form-field>
+
+      <p class="availability" *ngIf="isRent">
+        Fixed rent price: <strong>Rs. {{ fixedRentPrice }}</strong> per day
+      </p>
+
+      <ng-container *ngIf="isRent">
+        <div class="date-row">
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="rentStartDate" [min]="minDate()">
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+            <mat-error *ngIf="offerForm.get('rentStartDate')?.hasError('required')">
+              Start date is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="rentEndDate" [min]="offerForm.value.rentStartDate || minDate()">
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+            <mat-error *ngIf="offerForm.get('rentEndDate')?.hasError('required')">
+              End date is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="availability" *ngIf="offerForm.value.rentStartDate && offerForm.value.rentEndDate">
+          <span *ngIf="checkingAvailability()">Checking availability...</span>
+          <span *ngIf="!checkingAvailability()" [class.ok]="isDateAvailable()" [class.bad]="!isDateAvailable()">
+            {{ availabilityMsg() }}
+          </span>
+        </div>
+      </ng-container>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Message to Seller (optional)</mat-label>
+        <textarea matInput formControlName="message" rows="4" placeholder="Add any additional details..."></textarea>
+      </mat-form-field>
+
+      <div class="error-message" *ngIf="errorMsg()">
+        {{ errorMsg() }}
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting()">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="offerForm.invalid || isSubmitting() || (isRent && (!isDateAvailable() || checkingAvailability()))">
+      {{ isSubmitting() ? 'Sending...' : 'Submit Offer' }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,78 @@
+<div class="admin-page">
+  <div class="page-head">
+    <div>
+      <h2>Admin Audit Logs</h2>
+      <p>Track who changed what, with time and action-level history.</p>
+    </div>
+  </div>
+
+  <section class="card filters">
+    <input
+      type="text"
+      [(ngModel)]="q"
+      placeholder="Search action, entity, summary..."
+      (keyup.enter)="loadLogs(true)"
+    />
+    <input
+      type="text"
+      [(ngModel)]="action"
+      placeholder="Action (example: TRANSACTION_APPROVED)"
+      (keyup.enter)="loadLogs(true)"
+    />
+    <input
+      type="text"
+      [(ngModel)]="entityType"
+      placeholder="Entity (user, transaction, product...)"
+      (keyup.enter)="loadLogs(true)"
+    />
+    <select [(ngModel)]="adminId" (change)="loadLogs(true)">
+      <option value="">All Admins</option>
+      <option *ngFor="let admin of admins" [value]="admin._id">{{ admin.name }}</option>
+    </select>
+    <input type="date" [(ngModel)]="from" />
+    <input type="date" [(ngModel)]="to" />
+    <button class="btn" (click)="loadLogs(true)">Apply</button>
+    <button class="btn ghost" (click)="clearFilters()">Clear</button>
+  </section>
+
+  <div class="empty" *ngIf="loading">Loading audit logs...</div>
+  <div class="alert error" *ngIf="!loading && error">{{ error }}</div>
+  <div class="empty" *ngIf="!loading && !error && items.length === 0">No audit logs found for selected filters.</div>
+
+  <section class="card" *ngIf="!loading && !error && items.length > 0">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Admin</th>
+            <th>Action</th>
+            <th>Entity</th>
+            <th>Entity ID</th>
+            <th>Summary</th>
+            <th>Meta</th>
+            <th>IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of items">
+            <td>{{ log.createdAt | date:'medium' }}</td>
+            <td>{{ log.admin?.name || 'Unknown' }}</td>
+            <td><span class="action-chip">{{ log.action }}</span></td>
+            <td>{{ log.entityType || '-' }}</td>
+            <td>{{ log.entityId || '-' }}</td>
+            <td>{{ log.summary || '-' }}</td>
+            <td>{{ shortMeta(log.metadata) }}</td>
+            <td>{{ log.ipAddress || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="pagination" *ngIf="!loading && totalPages > 1">
+    <button class="page-btn" (click)="goToPage(page - 1)" [disabled]="page <= 1">Previous</button>
+    <span>Page {{ page }} / {{ totalPages }} ({{ total }} logs)</span>
+    <button class="page-btn" (click)="goToPage(page + 1)" [disabled]="page >= totalPages">Next</button>
+  </footer>
+</div>

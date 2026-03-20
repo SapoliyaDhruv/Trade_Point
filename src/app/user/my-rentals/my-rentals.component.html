@@ -1,0 +1,119 @@
+<section class="page">
+  <header class="header">
+    <h2>My Rentals</h2>
+    <button class="refresh" (click)="refresh()" [disabled]="loading">{{ loading ? 'Loading...' : 'Refresh' }}</button>
+  </header>
+
+  <div *ngIf="loading" class="state">Loading your rentals...</div>
+  <div *ngIf="error && !loading" class="state error">{{ error }}</div>
+
+  <section class="calendar-card" *ngIf="!loading && !error">
+    <div class="calendar-head">
+      <div>
+        <h3>Rental Calendar</h3>
+        <p class="caption">{{ monthLabel }} | Booked days: {{ totalBookedDays }}</p>
+      </div>
+
+      <div class="calendar-actions">
+        <select [value]="calendarMode" (change)="changeCalendarMode(($any($event.target).value))">
+          <option value="all">All Rentals</option>
+          <option value="out">Rented Out</option>
+          <option value="in">Rented By Me</option>
+        </select>
+        <button class="nav-btn" (click)="previousMonth()">Prev</button>
+        <button class="nav-btn" (click)="goToCurrentMonth()">Today</button>
+        <button class="nav-btn" (click)="nextMonth()">Next</button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><i class="dot out"></i> Rented Out</span>
+      <span><i class="dot in"></i> Rented By Me</span>
+    </div>
+
+    <div class="calendar-grid weeknames">
+      <div *ngFor="let name of dayNames">{{ name }}</div>
+    </div>
+
+    <div class="calendar-grid">
+      <div
+        class="day"
+        *ngFor="let week of calendarWeeks; let w = index"
+      >
+        <ng-container *ngFor="let d of week">
+          <div class="cell" [class.outside]="!d.inMonth" [class.today]="isToday(d)" [title]="dayTooltip(d)">
+            <span class="num">{{ d.date.getDate() }}</span>
+            <div class="chips">
+              <span class="chip out" *ngIf="d.outCount > 0">{{ d.outCount }}</span>
+              <span class="chip in" *ngIf="d.inCount > 0">{{ d.inCount }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </section>
+
+  <ng-container *ngIf="!loading && !error">
+    <h3>Items I Rented Out</h3>
+    <div *ngIf="rentalsAsSeller.length === 0" class="state">You have not rented out any item yet.</div>
+
+    <div class="grid" *ngIf="rentalsAsSeller.length > 0">
+      <article class="card" *ngFor="let rental of rentalsAsSeller">
+        <img [src]="getImageUrl(rental.productId?.photos?.[0])" alt="Product" (error)="handleImageError($event)" />
+        <div class="content">
+          <h4>{{ rental.productId?.name || 'Unnamed Product' }}</h4>
+          <p>Start: {{ rental.rentalId?.startDate | date:'mediumDate' }}</p>
+          <p>End: {{ rental.rentalId?.endDate | date:'mediumDate' }}</p>
+          <p>Status: {{ rental.rentalId?.returnStatus || 'PENDING_RETURN' }}</p>
+          <p *ngIf="rental.rentalId?.penaltyAmount > 0">Penalty: Rs. {{ rental.rentalId.penaltyAmount | number:'1.0-0' }}</p>
+          <p *ngIf="rental.rentalId?.penaltyAmount > 0">Penalty Payment: {{ rental.rentalId?.penaltyPaymentStatus || 'UNPAID' }}</p>
+
+          <button
+            class="btn warn"
+            *ngIf="rental.rentalId?.returnStatus === 'RETURN_REQUESTED' && (rental.rentalId?.penaltyAmount <= 0 || rental.rentalId?.penaltyPaymentStatus === 'PAID' || rental.rentalId?.penaltyPaymentStatus === 'WAIVED')"
+            (click)="confirmReturn(rental.transactionId || rental._id)"
+          >
+            Confirm Return
+          </button>
+
+          <small *ngIf="rental.rentalId?.returnStatus === 'RETURN_REQUESTED' && rental.rentalId?.penaltyAmount > 0 && rental.rentalId?.penaltyPaymentStatus !== 'PAID' && rental.rentalId?.penaltyPaymentStatus !== 'WAIVED'">
+            Waiting for buyer penalty payment before confirmation.
+          </small>
+        </div>
+      </article>
+    </div>
+
+    <h3>Items I Rented</h3>
+    <div *ngIf="rentalsAsBuyer.length === 0" class="state">You have not rented any item yet.</div>
+
+    <div class="grid" *ngIf="rentalsAsBuyer.length > 0">
+      <article class="card" *ngFor="let rental of rentalsAsBuyer">
+        <img [src]="getImageUrl(rental.productId?.photos?.[0])" alt="Product" (error)="handleImageError($event)" />
+        <div class="content">
+          <h4>{{ rental.productId?.name || 'Unnamed Product' }}</h4>
+          <p>Start: {{ rental.rentalId?.startDate | date:'mediumDate' }}</p>
+          <p>End: {{ rental.rentalId?.endDate | date:'mediumDate' }}</p>
+          <p>Status: {{ rental.rentalId?.returnStatus || 'PENDING_RETURN' }}</p>
+          <p *ngIf="rental.rentalId?.penaltyAmount > 0">Penalty: Rs. {{ rental.rentalId.penaltyAmount | number:'1.0-0' }}</p>
+          <p *ngIf="rental.rentalId?.penaltyAmount > 0">Penalty Payment: {{ rental.rentalId?.penaltyPaymentStatus || 'UNPAID' }}</p>
+
+          <button class="btn warn" *ngIf="rental.rentalId?.returnStatus === 'PENDING_RETURN'" (click)="requestReturn(rental.transactionId || rental._id)">
+            Request Return
+          </button>
+
+          <button
+            class="btn danger"
+            *ngIf="rental.rentalId?.returnStatus === 'RETURN_REQUESTED' && rental.rentalId?.penaltyAmount > 0 && rental.rentalId?.penaltyPaymentStatus !== 'PAID' && rental.rentalId?.penaltyPaymentStatus !== 'WAIVED'"
+            (click)="payPenalty(rental.transactionId || rental._id)"
+          >
+            Pay Penalty Rs. {{ rental.rentalId.penaltyAmount | number:'1.0-0' }}
+          </button>
+
+          <small *ngIf="rental.rentalId?.returnStatus === 'RETURN_REQUESTED' && rental.rentalId?.penaltyAmount > 0 && rental.rentalId?.penaltyPaymentStatus === 'PAID'">
+            Penalty paid. Waiting for owner confirmation.
+          </small>
+        </div>
+      </article>
+    </div>
+  </ng-container>
+</section>
